@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/motionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layoutDescription="@xml/motion_scene">
+
+    <ImageView
+        android:id="@+id/backImg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.4"
+        android:background="@color/white"
+        android:scaleType="centerCrop" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img1"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toStartOf="@id/img2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img2"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toStartOf="@id/img3"
+        app:layout_constraintStart_toEndOf="@id/img1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="0.2" />
+
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img3"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img4"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toStartOf="@id/img5"
+        app:layout_constraintStart_toEndOf="@id/img3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/img5"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundPercent="0.2" />
+
+    <androidx.constraintlayout.helper.widget.Carousel
+        android:id="@+id/carouselAdapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:carousel_backwardTransition="@id/backward"
+        app:carousel_firstView="@id/img3"
+        app:carousel_forwardTransition="@id/forward"
+        app:carousel_infinite="true"
+        app:carousel_nextState="@id/next"
+        app:carousel_previousState="@id/previous"
+        app:constraint_referenced_ids="img1,img2,img3,img4,img5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="200dp"
+        android:paddingTop="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/carouselAdapter" />
+
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
