@@ -1,2 +1,2 @@
 # JetCompose
-![jetcompose](/jetcompose.mp4)
+![jetcompose](/jetcompose.gif)
