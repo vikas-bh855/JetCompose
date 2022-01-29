@@ -38,6 +38,7 @@ import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
 import com.example.jetcompose.Constants
 import com.example.jetcompose.data.models.DiscoverResults
+import com.example.jetcompose.fontFamilyPR
 import com.example.jetcompose.formattedDate
 import com.example.jetcompose.presentation.viewmodel.ListViewModel
 import com.example.jetcompose.srcImagePath
@@ -122,6 +123,7 @@ class DetailFragment : Fragment() {
                     Modifier.fillMaxWidth(),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
+                    fontFamily = fontFamilyPR,
                     fontSize = 18.sp
                 )
                 Text(
@@ -174,12 +176,14 @@ class DetailFragment : Fragment() {
                         Text(
                             text = discoverResults.vote_average.toString(),
                             color = Color.Black,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = fontFamilyPR,
                         )
                     }
                     Text(
                         text = " IMDB ",
                         color = Color.Black,
+                        fontFamily = fontFamilyPR,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 10.dp)
@@ -196,12 +200,14 @@ class DetailFragment : Fragment() {
                         Text(
                             text = age,
                             color = Color.Black,
+                            fontFamily = fontFamilyPR,
                             fontWeight = FontWeight.Bold
                         )
                     }
                     Text(
                         text = " AGE ",
                         color = Color.Black,
+                        fontFamily = fontFamilyPR,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 10.dp)
@@ -217,12 +223,14 @@ class DetailFragment : Fragment() {
                         Text(
                             text = discoverResults.release_date.formattedDate,
                             color = Color.Black,
+                            fontFamily = fontFamilyPR,
                             fontWeight = FontWeight.Bold
                         )
                     }
                     Text(
                         text = " RELEASE ",
                         color = Color.Black,
+                        fontFamily = fontFamilyPR,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(top = 10.dp)

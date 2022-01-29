@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,9 +45,11 @@ import coil.ImageLoader
 import coil.compose.rememberImagePainter
 import coil.load
 import coil.request.ImageRequest
+import com.example.jetcompose.R
 import com.example.jetcompose.data.models.DiscoverResults
 import com.example.jetcompose.data.models.Genres
 import com.example.jetcompose.databinding.ListFragmentBinding
+import com.example.jetcompose.fontFamilyPR
 import com.example.jetcompose.presentation.viewmodel.ListViewModel
 import com.example.jetcompose.srcImagePath
 import dagger.hilt.android.AndroidEntryPoint
@@ -148,7 +151,7 @@ class ListFragment : Fragment() {
                 ) {
                     val colors1 = listOf(Color(0xFF31C7D0), Color(0xFF67A55D))
                     val colors2 = listOf(Color(0xFFAFA1D6), Color(0xFF2E47C7))
-                    val colors3 = listOf(Color(0xFFDBD5C1), Color(0xFFF4C840))
+                    val colors3 = listOf(Color(0xFFDBC1C1), Color(0xFFF44040))
                     var colors =
                         if (index % 2 == 0) colors1 else colors2
                     colors = if ((index + 1) % 3 == 0) colors3 else colors
@@ -161,6 +164,7 @@ class ListFragment : Fragment() {
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
+                            fontFamily = fontFamilyPR,
                             fontSize = 14.sp
                         )
                     }
@@ -196,7 +200,8 @@ class ListFragment : Fragment() {
                 text = title,
                 color = Color(0xff1D2729),
                 fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                fontFamily = fontFamilyPR
             )
         }
     }
@@ -222,7 +227,8 @@ class ListFragment : Fragment() {
         Column(
             modifier = Modifier
                 .width(width.dp)
-                .height(210.dp)
+                .height(210.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
                 shape = RoundedCornerShape(10.dp),
@@ -252,7 +258,7 @@ class ListFragment : Fragment() {
             }
             Text(
                 text = discoverResults.title,
-                fontFamily = FontFamily.SansSerif,
+                fontFamily = FontFamily(Font(R.font.poppinsr)),
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.White,
                 fontSize = 10.sp,

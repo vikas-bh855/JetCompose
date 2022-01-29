@@ -49,8 +49,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-    assetPacks = [":asset_pack_on_demand"]
-   // dynamicFeatures = [':dynamicfeature1',':dynamicfeature2']
 }
 dependencies {
     def nav_version = "2.3.5"

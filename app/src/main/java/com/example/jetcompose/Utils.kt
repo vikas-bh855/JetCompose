@@ -1,5 +1,7 @@
 package com.example.jetcompose
 
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -13,3 +15,5 @@ val String.formattedDate: String
         }
         SimpleDateFormat("dd MMM yy").format(date)
     }
+
+val fontFamilyPR = FontFamily(Font(R.font.poppinsr))
