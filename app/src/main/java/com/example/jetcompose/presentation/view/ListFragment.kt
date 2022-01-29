@@ -1,6 +1,5 @@
 package com.example.jetcompose.presentation.view
 
-import android.R.attr.maxLines
 import android.animation.ObjectAnimator
 import android.graphics.RenderEffect
 import android.graphics.Shader
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.helper.widget.Carousel
-import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -47,11 +44,11 @@ import coil.ImageLoader
 import coil.compose.rememberImagePainter
 import coil.load
 import coil.request.ImageRequest
-import com.example.jetcompose.R
 import com.example.jetcompose.data.models.DiscoverResults
 import com.example.jetcompose.data.models.Genres
 import com.example.jetcompose.databinding.ListFragmentBinding
 import com.example.jetcompose.presentation.viewmodel.ListViewModel
+import com.example.jetcompose.srcImagePath
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

@@ -65,15 +65,18 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0-beta02"
     implementation 'androidx.compose.material3:material3:1.0.0-alpha01'
     implementation "com.google.dagger:hilt-android:2.38.1"
     kapt "com.google.dagger:hilt-compiler:2.38.1"
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.0"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
     implementation 'io.coil-kt:coil-compose:1.3.1'
     implementation "androidx.constraintlayout:constraintlayout:2.1.2"
+
     implementation libs.bundles.play.core
+    implementation libs.bundles.retrofit
 
     androidTestImplementation libs.compose.test
     debugImplementation libs.compose.tooling.ui

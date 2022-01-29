@@ -2,10 +2,7 @@ package com.example.jetcompose.presentation.viewmodel;
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcompose.data.models.Discover
-import com.example.jetcompose.data.models.DiscoverResults
-import com.example.jetcompose.data.models.GenreData
-import com.example.jetcompose.data.models.Genres
+import com.example.jetcompose.data.models.*
 import com.example.jetcompose.data.repository.ListRepository
 import com.example.jetcompose.data.source.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +18,7 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
     val listGenres: MutableStateFlow<List<Genres>> = MutableStateFlow(emptyList())
     val listDiscover: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
     val listPopular: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
+    val listMovieCrew: MutableStateFlow<List<MovieCrew>> = MutableStateFlow(emptyList())
     private val error: MutableStateFlow<String> = MutableStateFlow("")
 
     init {
@@ -46,6 +44,19 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
                 when (it) {
                     is Result.Success<*> -> {
                         listDiscover.emit((it.data as Discover).results)
+                    }
+                    else -> error.emit("")
+                }
+            }
+        }
+    }
+
+    fun getMovieCredits(movieId: String) {
+        viewModelScope.launch {
+            repository.getMovieCredits(movieId = movieId).collect {
+                when (it) {
+                    is Result.Success<*> -> {
+                        listMovieCrew.emit((it.data as MovieCast).cast)
                     }
                     else -> error.emit("")
                 }

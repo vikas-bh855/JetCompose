@@ -11,20 +11,19 @@ class ListRepository @Inject constructor(
 ) {
 
     fun getGenres() = flow {
-        val hashMap = hashMapOf("api_key" to "1d9b898a212ea52e283351e521e17871")
-        emit(dataSource.executeApi { apiService.getGenres(hashMap) })
+        emit(dataSource.executeApi { apiService.getGenres() })
     }
 
-    fun getPopulars() =  flow{
-        val hashMap = hashMapOf("api_key" to "1d9b898a212ea52e283351e521e17871")
-        emit(dataSource.executeApi { apiService.getPopulars(hashMap) })
+    fun getPopulars() = flow {
+        emit(dataSource.executeApi { apiService.getPopulars() })
     }
 
-    fun getDiscoverGenre(genreId:String) = flow {
-        val hashMap = hashMapOf(
-            "api_key" to "1d9b898a212ea52e283351e521e17871",
-            "with_genres" to genreId
-        )
+    fun getDiscoverGenre(genreId: String) = flow {
+        val hashMap = hashMapOf("with_genres" to genreId)
         emit(dataSource.executeApi { apiService.getDiscover(hashMap) })
+    }
+
+    fun getMovieCredits(movieId: String) = flow {
+        emit(dataSource.executeApi { apiService.getMovieCredits(movieId) })
     }
 }

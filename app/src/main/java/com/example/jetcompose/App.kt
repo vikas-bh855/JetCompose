@@ -1,16 +1,12 @@
 package com.example.jetcompose
 
-import android.content.Context
-import com.google.android.play.core.splitcompat.SplitCompat
-import com.google.android.play.core.splitcompat.SplitCompatApplication
+import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 
 
 @HiltAndroidApp
-class App : SplitCompatApplication() {
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        SplitCompat.install(this)
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
     }
 }
