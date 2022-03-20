@@ -8,7 +8,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -40,6 +42,8 @@ import com.example.jetcompose.Constants
 import com.example.jetcompose.data.models.DiscoverResults
 import com.example.jetcompose.fontFamilyPR
 import com.example.jetcompose.formattedDate
+import com.example.jetcompose.presentation.utils.blue
+import com.example.jetcompose.presentation.utils.colorDarkGrey
 import com.example.jetcompose.presentation.viewmodel.ListViewModel
 import com.example.jetcompose.srcImagePath
 import dagger.hilt.android.AndroidEntryPoint
@@ -283,7 +287,6 @@ class DetailFragment : Fragment() {
                                 fontSize = 10.sp
                             )
                         }
-
                 }
             })
 

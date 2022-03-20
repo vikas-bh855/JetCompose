@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.jetcompose">
 
-    <uses-permission android:name = "android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -13,12 +13,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.JetCompose">
+        android:theme="@style/Theme.JetCompose.NoActionBar">
         <activity
             android:name=".presentation.view.MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.JetCompose.NoActionBar">
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".presentation.view.SplashScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,11 +29,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.view.InstallInTime" />
-        <activity android:name=".presentation.view.OnDemand" />
-        <activity android:name=".presentation.view.OnDemandVideo" />
-        <activity android:name=".presentation.view.OnDemandAssetVideo" />
-        <activity android:name=".presentation.view.OnDemandAssetVideo2" />
+        <activity android:name=".presentation.view.ProfileActivity"/>
     </application>
 
 </manifest>

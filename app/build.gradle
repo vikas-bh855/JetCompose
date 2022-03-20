@@ -6,6 +6,8 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
+apply plugin: TaskTest
+
 android {
     compileSdk 31
 
@@ -50,12 +52,12 @@ android {
         }
     }
 }
+
 dependencies {
     def nav_version = "2.3.5"
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation libs.bundles.compose
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
     implementation 'androidx.activity:activity-compose:1.4.0'
     testImplementation 'junit:junit:4.+'
@@ -73,9 +75,15 @@ dependencies {
     implementation 'io.coil-kt:coil-compose:1.3.1'
     implementation "androidx.constraintlayout:constraintlayout:2.1.2"
 
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+
+    implementation libs.bundles.compose
+
     implementation libs.bundles.play.core
     implementation libs.bundles.retrofit
 
     androidTestImplementation libs.compose.test
     debugImplementation libs.compose.tooling.ui
 }
+
+
