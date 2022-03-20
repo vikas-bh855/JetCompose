@@ -30,6 +30,7 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(ComposeView(this).apply {
             setContent {
+                ProfileImage()
             }
         })
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -42,7 +43,9 @@ class ProfileActivity : AppCompatActivity() {
     @Preview
     @Composable
     fun ProfileImage() {
-        BoxWithConstraints(Modifier.fillMaxSize().padding(10.dp)) {
+        BoxWithConstraints(Modifier
+                .fillMaxSize()
+                .padding(10.dp)) {
             val squareSize = maxWidth / 2
             val swipeableState = rememberSwipeableState(0)
             val sizePx = with(LocalDensity.current) { squareSize.toPx() }

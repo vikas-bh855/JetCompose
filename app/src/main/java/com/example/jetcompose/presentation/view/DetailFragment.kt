@@ -32,14 +32,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import coil.compose.rememberImagePainter
-import com.example.jetcompose.Constants
 import com.example.jetcompose.data.models.DiscoverResults
+import com.example.jetcompose.data.models.DiscoverResultsParameterProvider
 import com.example.jetcompose.fontFamilyPR
 import com.example.jetcompose.formattedDate
 import com.example.jetcompose.presentation.utils.blue
@@ -57,34 +58,34 @@ class DetailFragment : Fragment() {
     private val listViewModel by viewModels<ListViewModel>()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
                 listViewModel.getMovieCredits(args.discoverResults.id.toString())
                 Box {
                     Image(
-                        painter = rememberImagePainter(data = args.discoverResults.poster_path.srcImagePath),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .blur(20.dp)
-                            .alpha(0.4f),
-                        contentScale = ContentScale.Crop
+                            painter = rememberImagePainter(data = args.discoverResults.poster_path.srcImagePath),
+                            contentDescription = "",
+                            modifier = Modifier
+                                    .fillMaxSize()
+                                    .blur(20.dp)
+                                    .alpha(0.4f),
+                            contentScale = ContentScale.Crop
                     )
                     Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(start = 20.dp, end = 20.dp, top = 40.dp)
+                            Modifier
+                                    .fillMaxSize()
+                                    .padding(start = 20.dp, end = 20.dp, top = 40.dp)
                     ) {
                         DetailPage(args.discoverResults)
                         ShowArc(args.discoverResults)
                         Text(
-                            text = "Cast",
-                            color = Color.White,
-                            modifier = Modifier.padding(start = 10.dp)
+                                text = "Cast",
+                                color = Color.White,
+                                modifier = Modifier.padding(start = 10.dp)
                         )
                         ShowCredits()
                     }
@@ -104,40 +105,40 @@ class DetailFragment : Fragment() {
         }
         Row {
             Card(
-                modifier = Modifier
-                    .offset(y = floatAnimatable.value.dp)
-                    .alpha(alphaAnimatable.value)
-                    .size(150.dp, 230.dp)
-                    .shadow(5.dp),
-                elevation = 10.dp,
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(0.5.dp, blue)
+                    modifier = Modifier
+                            .offset(y = floatAnimatable.value.dp)
+                            .alpha(alphaAnimatable.value)
+                            .size(150.dp, 230.dp)
+                            .shadow(5.dp),
+                    elevation = 10.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(0.5.dp, blue)
             ) {
                 Image(
-                    painter = rememberImagePainter(data = discoverResults.poster_path.srcImagePath),
-                    contentDescription = "",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
+                        painter = rememberImagePainter(data = discoverResults.poster_path.srcImagePath),
+                        contentDescription = "",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
 
-                    )
+                        )
             }
             Column(Modifier.padding(15.dp, 0.dp, 0.dp, 0.dp)) {
                 Text(
-                    text = discoverResults.title,
-                    Modifier.fillMaxWidth(),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = fontFamilyPR,
-                    fontSize = 18.sp
+                        text = discoverResults.title,
+                        Modifier.fillMaxWidth(),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = fontFamilyPR,
+                        fontSize = 18.sp
                 )
                 Text(
-                    text = discoverResults.overview,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp, 5.dp),
-                    color = colorDarkGrey,
-                    fontStyle = FontStyle.Normal,
-                    fontSize = 12.sp
+                        text = discoverResults.overview,
+                        Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp, 5.dp),
+                        color = colorDarkGrey,
+                        fontStyle = FontStyle.Normal,
+                        fontSize = 12.sp
                 )
             }
         }
@@ -145,9 +146,9 @@ class DetailFragment : Fragment() {
 
     @Preview
     @Composable
-    fun ShowArc(discoverResults: DiscoverResults = Constants.discoverResults) {
+    fun ShowArc(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
         Card(
-            shape = RoundedCornerShape(10.dp), modifier = Modifier
+                shape = RoundedCornerShape(10.dp), modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 20.dp), backgroundColor = blue
         ) {
@@ -160,84 +161,84 @@ class DetailFragment : Fragment() {
             }
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
                 Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Canvas(modifier = Modifier.size(40.dp, 40.dp), onDraw = {
                             drawArc(
-                                brush = Brush.linearGradient(
-                                    listOf(
-                                        Color(0xffEA4335), Color(0xffEA4335)
-                                    )
-                                ),
-                                startAngle = -90f,
-                                sweepAngle = lengthAnimatable.value,
-                                useCenter = false,
-                                style = Stroke(width = 6f),
+                                    brush = Brush.linearGradient(
+                                            listOf(
+                                                    Color(0xffEA4335), Color(0xffEA4335)
+                                            )
+                                    ),
+                                    startAngle = -90f,
+                                    sweepAngle = lengthAnimatable.value,
+                                    useCenter = false,
+                                    style = Stroke(width = 6f),
                             )
                         })
                         Text(
-                            text = discoverResults.vote_average.toString(),
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontFamily = fontFamilyPR,
+                                text = discoverResults.vote_average.toString(),
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = fontFamilyPR,
                         )
                     }
                     Text(
-                        text = " IMDB ",
-                        color = Color.Black,
-                        fontFamily = fontFamilyPR,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 10.dp)
+                            text = " IMDB ",
+                            color = Color.Black,
+                            fontFamily = fontFamilyPR,
+                            modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(top = 10.dp)
                     )
                 }
 
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally)
                 {
                     Box(
-                        modifier = Modifier.size(50.dp, 40.dp),
-                        contentAlignment = Alignment.Center
+                            modifier = Modifier.size(50.dp, 40.dp),
+                            contentAlignment = Alignment.Center
                     ) {
                         val age = if (discoverResults.adult) "18 +" else "13 +"
                         Text(
-                            text = age,
-                            color = Color.Black,
-                            fontFamily = fontFamilyPR,
-                            fontWeight = FontWeight.Bold
+                                text = age,
+                                color = Color.Black,
+                                fontFamily = fontFamilyPR,
+                                fontWeight = FontWeight.Bold
                         )
                     }
                     Text(
-                        text = " AGE ",
-                        color = Color.Black,
-                        fontFamily = fontFamilyPR,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 10.dp)
+                            text = " AGE ",
+                            color = Color.Black,
+                            fontFamily = fontFamilyPR,
+                            modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(top = 10.dp)
                     )
                 }
 
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally)
                 {
                     Box(
-                        modifier = Modifier.size(70.dp, 40.dp),
-                        contentAlignment = Alignment.Center
+                            modifier = Modifier.size(70.dp, 40.dp),
+                            contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = discoverResults.release_date.formattedDate,
-                            color = Color.Black,
-                            fontFamily = fontFamilyPR,
-                            fontWeight = FontWeight.Bold
+                                text = discoverResults.release_date.formattedDate,
+                                color = Color.Black,
+                                fontFamily = fontFamilyPR,
+                                fontWeight = FontWeight.Bold
                         )
                     }
                     Text(
-                        text = " RELEASE ",
-                        color = Color.Black,
-                        fontFamily = fontFamilyPR,
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 10.dp)
+                            text = " RELEASE ",
+                            color = Color.Black,
+                            fontFamily = fontFamilyPR,
+                            modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(top = 10.dp)
                     )
                 }
             }
@@ -253,42 +254,42 @@ class DetailFragment : Fragment() {
         }
         val listCrew = listViewModel.listMovieCrew.collectAsState()
         LazyVerticalGrid(
-            cells = GridCells.Fixed(3),
-            horizontalArrangement = Arrangement.Center,
-            content = {
-                itemsIndexed(listCrew.value) { index, item ->
-                    if (index < 6)
-                        Column(
-                            Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Card(
-                                Modifier
-                                    .size(80.dp)
-                                    .background(color = Color.Transparent)
-                                    .alpha(alphaAnimation.value),
-                                shape = CircleShape,
+                cells = GridCells.Fixed(3),
+                horizontalArrangement = Arrangement.Center,
+                content = {
+                    itemsIndexed(listCrew.value) { index, item ->
+                        if (index < 6)
+                            Column(
+                                    Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Image(
-                                    modifier = Modifier.fillMaxSize(),
-                                    painter = rememberImagePainter(
-                                        data =
-                                        item.profile_path.srcImagePath
-                                    ),
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
+                                Card(
+                                        Modifier
+                                                .size(80.dp)
+                                                .background(color = Color.Transparent)
+                                                .alpha(alphaAnimation.value),
+                                        shape = CircleShape,
+                                ) {
+                                    Image(
+                                            modifier = Modifier.fillMaxSize(),
+                                            painter = rememberImagePainter(
+                                                    data =
+                                                    item.profile_path.srcImagePath
+                                            ),
+                                            contentDescription = "",
+                                            contentScale = ContentScale.Crop,
+                                    )
+                                }
+                                Text(
+                                        modifier = Modifier.padding(top = 10.dp),
+                                        text = item.name,
+                                        color = Color.White,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 10.sp
                                 )
                             }
-                            Text(
-                                modifier = Modifier.padding(top = 10.dp),
-                                text = item.name,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 10.sp
-                            )
-                        }
-                }
-            })
+                    }
+                })
 
     }
 
