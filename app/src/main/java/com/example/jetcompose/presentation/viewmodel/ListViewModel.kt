@@ -7,7 +7,6 @@ import com.example.jetcompose.data.models.*
 import com.example.jetcompose.data.repository.ListRepository
 import com.example.jetcompose.data.source.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -17,11 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ListViewModel @Inject constructor(private val repository: ListRepository) : ViewModel() {
 
-    val listGenres = mutableStateOf<List<Genres>>(emptyList())
-    val listDiscover =
-        mutableStateOf(mutableMapOf<String, List<DiscoverResults>>())
-    val listPopular: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
-    val listMovieCrew: MutableStateFlow<List<MovieCrew>> = MutableStateFlow(emptyList())
+    val listDiscover = mutableStateOf(mutableMapOf<String, List<DiscoverResults>>())
+    val listNowPlaying = mutableStateOf(listOf<DiscoverResults>())
+    val listTrending: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
     private val error: MutableStateFlow<String> = MutableStateFlow("")
 
     init {
@@ -37,18 +34,30 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
                     else -> error.emit("")
                 }
             }
-            repository.getPopulars().collect {
+            repository.getTrending().collect {
                 when (it) {
-                    is Result.Success<*> -> listPopular.emit((it.data as Discover).results)
+                    is Result.Success<*> -> listTrending.emit((it.data as Discover).results)
                     else -> error.emit("")
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            repository.getNowPlaying().collect {
+                when (it) {
+                    is Result.Success<*> -> {
+                        listNowPlaying.value = (it.data as Discover).results
+                    }
+                    else -> {
+                        error.emit("")
+                    }
                 }
             }
         }
     }
 
-    val map = mutableMapOf<String, List<DiscoverResults>>()
-
-    fun getDiscoverGenres(genreId: String, genreName: String, size: Int) {
+    private val map = linkedMapOf<String, List<DiscoverResults>>()
+    private fun getDiscoverGenres(genreId: String, genreName: String, size: Int) {
         viewModelScope.launch {
             repository.getDiscoverGenre(genreId = genreId).collect {
                 when (it) {
@@ -62,18 +71,4 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
             }
         }
     }
-
-    fun getMovieCredits(movieId: String) {
-        viewModelScope.launch {
-            repository.getMovieCredits(movieId = movieId).collect {
-                when (it) {
-                    is Result.Success<*> -> {
-                        listMovieCrew.emit((it.data as MovieCast).cast)
-                    }
-                    else -> error.emit("")
-                }
-            }
-        }
-    }
-
 }

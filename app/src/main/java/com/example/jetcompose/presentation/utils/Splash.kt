@@ -48,7 +48,7 @@ fun Splash() {
     }
     Canvas(
         modifier = Modifier
-            .background(cyanDark)
+            .background(colorDarkGrey)
             .fillMaxSize()
             .offset(x = (-40).dp, y = (-20).dp)
             .graphicsLayer {

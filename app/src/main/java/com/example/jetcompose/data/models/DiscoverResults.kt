@@ -13,7 +13,9 @@ data class DiscoverResults(
     val original_title: String,
     val overview: String,
     val release_date: String,
-    val adult: Boolean
+    val adult: Boolean,
+    val original_language: String,
+    val genres: List<Genres>? = null
 ) : Serializable
 
 
@@ -28,7 +30,9 @@ class DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResult
             original_title = "Spider-Man: No Way Home",
             overview = "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man.",
             release_date = "2021-12-15",
-            adult = false
+            adult = false,
+            original_language = "en",
+            genres = listOf(Genres("12","Action"), Genres("12","Adventure"))
         )
     )
 }

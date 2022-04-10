@@ -1,8 +1,7 @@
 package com.example.jetcompose.data
 
-import com.example.jetcompose.data.models.Discover
-import com.example.jetcompose.data.models.GenreData
-import com.example.jetcompose.data.models.MovieCast
+import com.example.jetcompose.data.models.*
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -14,11 +13,20 @@ interface ApiService {
     suspend fun getGenres(): Response<GenreData>
 
     @GET("trending/all/week")
-    suspend fun getPopulars(): Response<Discover>
+    suspend fun getTrending(): Response<Discover>
 
     @GET("discover/movie")
     suspend fun getDiscover(@QueryMap hashMap: HashMap<String, String>): Response<Discover>
 
     @GET("movie/{movie_id}/credits")
     suspend fun getMovieCredits(@Path("movie_id") movieId: String): Response<MovieCast>
+
+    @GET("movie/{movie_id}")
+    suspend fun getMovieDetails(@Path("movie_id") movieId: String): Response<DiscoverResults>
+
+    @GET("movie/now_playing")
+    suspend fun getNowPlaying(): Response<Discover>
+
+    @GET("movie/{movie_id}/videos")
+    suspend fun getVideoUrl(@Path("movie_id") movieId: String): Response<Video>
 }

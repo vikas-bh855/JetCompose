@@ -13,7 +13,7 @@ val String.formattedDate: String
         val date = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).let {
             it.parse(this)
         }
-        SimpleDateFormat("dd MMM yy").format(date)
+        SimpleDateFormat("yyyy").format(date)
     }
 
 val fontFamilyPR = FontFamily(Font(R.font.poppinsr))

@@ -27,7 +27,7 @@ class SplashScreen : ComponentActivity() {
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            delay(3000)
+           delay(2000)
             startActivity(
                 Intent(this@SplashScreen, MainActivity::class.java)
             )

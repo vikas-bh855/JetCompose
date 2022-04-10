@@ -14,13 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JetCompose.NoActionBar">
-        <activity
+     <!--   <activity
             android:name=".presentation.view.MainActivity"
             android:exported="false"
-            android:label="@string/app_name" />
+            android:label="@string/app_name" />-->
 
         <activity
-            android:name=".presentation.view.SplashScreen"
+            android:name=".presentation.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
