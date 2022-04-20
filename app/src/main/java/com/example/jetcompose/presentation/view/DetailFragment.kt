@@ -115,7 +115,7 @@ class DetailFragment : Fragment() {
     fun TopLayout(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
         val floatAnimatable = remember { Animatable(30f) }
         val alphaAnimatable = remember { Animatable(0f) }
-        val scaleAnimatable = remember { Animatable(2f) }
+        val scaleAnimatable = remember { Animatable(1.5f) }
         LaunchedEffect(discoverResults.poster_path) {
             launch { floatAnimatable.animateTo(0f, tween(800)) }
             launch { alphaAnimatable.animateTo(1f, tween(800)) }

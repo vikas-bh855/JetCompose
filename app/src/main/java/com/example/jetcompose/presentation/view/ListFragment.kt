@@ -1,24 +1,24 @@
 package com.example.jetcompose.presentation.view
 
-import android.animation.ObjectAnimator
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,96 +39,42 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.constraintlayout.helper.widget.Carousel
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import coil.ImageLoader
 import coil.compose.rememberImagePainter
-import coil.load
-import coil.request.ImageRequest
 import com.example.jetcompose.R
 import com.example.jetcompose.data.models.DiscoverParameterProvider
 import com.example.jetcompose.data.models.DiscoverResults
 import com.example.jetcompose.data.models.DiscoverResultsParameterProvider
-import com.example.jetcompose.databinding.ListFragmentBinding
 import com.example.jetcompose.fontFamilyPR
-import com.example.jetcompose.presentation.utils.colorAppBackground
-import com.example.jetcompose.presentation.utils.colorDarkGrey
-import com.example.jetcompose.presentation.utils.colorOffWhite
-import com.example.jetcompose.presentation.utils.colorWhite
+import com.example.jetcompose.presentation.utils.*
 import com.example.jetcompose.presentation.viewmodel.ListViewModel
 import com.example.jetcompose.srcImagePath
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @AndroidEntryPoint
 class ListFragment : Fragment() {
     private val listViewModel by viewModels<ListViewModel>()
-    private lateinit var binding: ListFragmentBinding
-    private var currentPos = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ListFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    @RequiresApi(Build.VERSION_CODES.S)
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            // backImg.setRenderEffect(RenderEffect.createBlurEffect(40f, 40f, Shader.TileMode.CLAMP))
-            lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    listViewModel.listTrending.collect {
-                        if (it.isNotEmpty()) {
-                            backImg.load(it.first().poster_path.srcImagePath)
-                            tvPopularTitle.text = (it.first().title)
-                        }
-                        carouselAdapter.setAdapter(object : Carousel.Adapter {
-                            override fun count(): Int = it.size
-
-                            override fun populate(view: View?, index: Int) {
-                                currentPos = index
-                                (view as ImageView).load(it[index].backdrop_path.srcImagePath)
-                            }
-
-                            override fun onNewItem(index: Int) {
-                                val imageLoader = ImageLoader(requireContext())
-                                val request = ImageRequest.Builder(requireContext())
-                                    .data(it[index].poster_path.srcImagePath)
-                                    .target {
-                                        ObjectAnimator.ofFloat(backImg, View.ALPHA, 0f, 0.2f)
-                                            .setDuration(1000)
-                                            .start()
-                                        backImg.setImageDrawable(it)
-                                    }
-                                    .build()
-                                imageLoader.enqueue(request)
-                                tvPopularTitle.text = it[index].original_title
-                            }
-                        })
-                        if (it.isNotEmpty())
-                            carouselAdapter.refresh()
-                    }
-                }
-            }
-            binding.composeView.apply {
-                setContent {
-                    DiscoverList()
-                }
+        return ComposeView(requireContext()).apply {
+            setContent {
+                DiscoverList()
             }
         }
     }
@@ -221,15 +168,18 @@ class ListFragment : Fragment() {
         )
         {
             val mapDiscover = listViewModel.listDiscover.value.toSortedMap()
+            val listBanner = listViewModel.listTrending.collectAsState()
             val listNowPlaying = listViewModel.listNowPlaying.value
             val listSorted = mapDiscover.keys.sorted().toMutableList()
-            listSorted.add(0, "Now Playing")
+            listSorted.add(0, "Banner")
+            listSorted.add(1, "Now Playing")
             LazyColumn {
                 items(listSorted) { genreName ->
-                    if (genreName == "Now Playing")
-                        NowPlaying(genreName, listNowPlaying)
-                    else
-                        DiscoverItem(genreName, mapDiscover[genreName]!!)
+                    when (genreName) {
+                        "Banner" -> Banner(listBanner.value)
+                        "Now Playing" -> NowPlaying(genreName, listNowPlaying)
+                        else -> DiscoverItem(genreName, mapDiscover[genreName]!!)
+                    }
                 }
             }
         }
@@ -237,18 +187,63 @@ class ListFragment : Fragment() {
 
     @Preview
     @Composable
-    fun DiscoverItem(
-        title: String = "title", listDiscover: List<DiscoverResults> = emptyList(),
-        width: Int = 120, height: Int = 180
-    ) {
-        if (listDiscover.isNotEmpty()) {
-            Title(title = title, 15)
-            LazyRow(Modifier.padding(vertical = 7.dp)) {
-                items(listDiscover) { discover ->
-                    ShowImage(discover, width, height)
+    fun Banner(@PreviewParameter(DiscoverResultsParameterProvider::class) listBanner: List<DiscoverResults>) {
+        HorizontalPager(
+            itemSpacing = (-30).dp,
+            count = listBanner.size,
+            contentPadding = PaddingValues(horizontal = 30.dp),
+            modifier = Modifier.padding(top = 20.dp, bottom = 10.dp)
+        ) { pager ->
+            BoxWithConstraints {
+                Card(
+                    backgroundColor = Color.Transparent,
+                    modifier = Modifier
+                        .graphicsLayer {
+                            val pageOffset = calculateCurrentOffsetForPage(pager).absoluteValue
+                            val dp = lerp(
+                                start = 2f.toDp(),
+                                stop = 2.6f.toDp(),
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                            scaleX = dp.value
+                            scaleY = dp.value
+                            Log.d(TAG, "Banner: $currentPageOffset")
+                        }
+                        .fillMaxWidth()
+                        .aspectRatio(16 / 9f), elevation = 10.dp,
+                    shape = RoundedCornerShape(0.dp)
+                ) {
+                    Box(Modifier.fillMaxSize()) {
+                        Image(
+                            painter = rememberImagePainter(
+                                data = listBanner[pager].backdrop_path.srcImagePath,
+                                builder = {
+                                    crossfade(true)
+                                }),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Text(
+                            text = listBanner[pager].original_title ?: "",
+                            fontFamily = fontFamilyPR,
+                            color = Color.White,
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .align(Alignment.BottomCenter)
+                                .background(
+                                    color = colorDarkGreyTransparent,
+                                    shape = RoundedCornerShape(0.dp),
+                                )
+                                .padding(5.dp),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
+
         }
+
     }
 
     @Preview
@@ -262,6 +257,27 @@ class ListFragment : Fragment() {
             LazyRow(Modifier.padding(vertical = 7.dp)) {
                 items(listDiscover) { discoverResults ->
                     Image(discoverResults, 150, 230, 12)
+                }
+            }
+        }
+    }
+
+    @Preview
+    @Composable
+    fun DiscoverItem(
+        title: String = "title", listDiscover: List<DiscoverResults> = emptyList(),
+        width: Int = 120, height: Int = 180
+    ) {
+        if (listDiscover.isNotEmpty()) {
+            val lazyListState = rememberLazyListState()
+            Title(title = title, 15)
+            LazyRow(
+                Modifier.padding(vertical = 7.dp),
+                state = lazyListState,
+                flingBehavior = ScrollableDefaults.flingBehavior()
+            ) {
+                items(listDiscover) { discover ->
+                    ShowImage(discover, width, height)
                 }
             }
         }

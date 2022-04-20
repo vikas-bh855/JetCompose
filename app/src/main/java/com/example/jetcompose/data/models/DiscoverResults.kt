@@ -10,7 +10,7 @@ data class DiscoverResults(
     val backdrop_path: String,
     val title: String,
     val vote_average: Double,
-    val original_title: String,
+    val original_title: String ?,
     val overview: String,
     val release_date: String,
     val adult: Boolean,

@@ -22,6 +22,7 @@ val colorCyanLight = Color(0xFF00FFFF)
 val colorCyanDark = Color(0xFF03928E)
 val colorGrey = Color(0xFF758486)
 val colorDarkGrey = Color(0xFF282425)
+val colorDarkGreyTransparent = Color(0xAB1E1F22)
 val colorSkyGreen = Color(0xFF025353)
 val colorBlue = Color(0xFFEDF6FC)
 var angle = 0f
