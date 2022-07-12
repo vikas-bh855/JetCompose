@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class ListRepository @Inject constructor(
     private val apiService: ApiService,
-    private var dataSource: RemoteDataSource
+    private val dataSource: RemoteDataSource
 ) {
 
     fun getGenres() = flow {

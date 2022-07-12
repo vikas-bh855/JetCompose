@@ -10,7 +10,3 @@ class App : Application() {
         super.onCreate()
     }
 }
-
-interface Details{
-    fun test():String
-}

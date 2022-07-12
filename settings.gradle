@@ -13,6 +13,7 @@ dependencyResolutionManagement {
             version('core-java', '1.10.2')
             version('core-ktx', '1.8.1')
             version('retrofit2', '2.9.0')
+            version('palette', '28.0.0')
 
             //retrofit
             alias('retrofit2').to('com.squareup.retrofit2', 'retrofit').versionRef('retrofit2')
@@ -30,6 +31,9 @@ dependencyResolutionManagement {
             //play core
             alias('play-core-java').to('com.google.android.play', 'core').versionRef('core-java')
             alias('play-core-ktx').to('com.google.android.play', 'core-ktx').versionRef('core-ktx')
+
+            //palette
+            alias('palette').to('com.android.support','palette-v7').versionRef('palette')
 
             bundle('compose', ['compose-ui', 'compose-material', 'compose-tooling-preview'])
             bundle('play-core', ['play-core-java', 'play-core-ktx'])

@@ -1,6 +1,6 @@
 # JetCompose
 
-## Motion Layout(XML) and Jetpack Compose Animation.
+## Jetpack Compose Carousel and Animation.
 
 |Carousel Banner|Detail Page|
 |-------|------|

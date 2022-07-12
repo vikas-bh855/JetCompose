@@ -10,7 +10,7 @@ data class DiscoverResults(
     val backdrop_path: String,
     val title: String,
     val vote_average: Double,
-    val original_title: String ?,
+    val original_title: String?,
     val overview: String,
     val release_date: String,
     val adult: Boolean,
@@ -19,7 +19,7 @@ data class DiscoverResults(
 ) : Serializable
 
 
-class DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResults> {
+object DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResults> {
     override val values = sequenceOf(
         DiscoverResults(
             id = 634649,
@@ -32,7 +32,7 @@ class DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResult
             release_date = "2021-12-15",
             adult = false,
             original_language = "en",
-            genres = listOf(Genres("12","Action"), Genres("12","Adventure"))
+            genres = listOf(Genres("12", "Action"), Genres("12", "Adventure"))
         )
     )
 }

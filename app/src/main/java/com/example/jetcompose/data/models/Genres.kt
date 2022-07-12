@@ -7,7 +7,7 @@ data class GenreData(val genres: List<Genres>) : Serializable
 
 data class Genres(val id: String, val name: String) : Serializable
 
-data class Discover(val results: List<DiscoverResults>) : Serializable
+data class Discover(val results: List<DiscoverResults>, val page: Int) : Serializable
 
 data class Video(val results: List<VideoResults>) : Serializable
 
@@ -25,7 +25,7 @@ data class MovieCrew(
     val character: String,
 )
 
-class DiscoverParameterProvider : PreviewParameterProvider<Discover> {
+object DiscoverParameterProvider : PreviewParameterProvider<Discover> {
     override val values = sequenceOf(
         Discover(
             results = listOf(
@@ -42,7 +42,8 @@ class DiscoverParameterProvider : PreviewParameterProvider<Discover> {
                     original_language = "en",
                     genres = listOf(Genres("12", "Action"), Genres("12", "Adventure"))
                 )
-            )
+            ),
+            page = 1
         )
     )
 }

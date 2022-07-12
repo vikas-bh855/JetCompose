@@ -12,11 +12,10 @@ class RemoteDataSource @Inject constructor() {
             Result.Success(response.body())
         else
             Result.Error(response.errorBody().toString())
-
     }
 }
 
 sealed class Result {
-    data class Success<T>(val data: T):Result()
-    data class Error<T>(val data: T):Result()
+    data class Success<T>(val data: T) : Result()
+    data class Error<T>(val data: T) : Result()
 }

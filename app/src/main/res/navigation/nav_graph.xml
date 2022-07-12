@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/listFragment"
-    android:id="@+id/nav_graph.xml">
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/listFragment">
 
     <fragment
         android:id="@+id/listFragment"
@@ -15,11 +15,21 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.jetcompose.presentation.view.DetailFragment"
-        android:label="DetailFragment" >
+        android:label="DetailFragment">
         <argument
             android:name="discoverResults"
             app:argType="com.example.jetcompose.data.models.DiscoverResults" />
 
     </fragment>
 
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.jetcompose.presentation.view.SearchFragment"
+        android:label="SearchFragment">
+
+        <action
+            android:id="@+id/action_SearchFragment_to_action_DetailFragment"
+            app:destination="@id/detailFragment" />
+
+    </fragment>
 </navigation>

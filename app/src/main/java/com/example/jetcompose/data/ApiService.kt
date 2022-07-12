@@ -1,10 +1,10 @@
 package com.example.jetcompose.data
 
 import com.example.jetcompose.data.models.*
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface ApiService {
@@ -29,4 +29,10 @@ interface ApiService {
 
     @GET("movie/{movie_id}/videos")
     suspend fun getVideoUrl(@Path("movie_id") movieId: String): Response<Video>
+
+    @GET("search/movie")
+    suspend fun getSearch(
+        @Query("query") searchText: String,
+        @Query("page") page: Int
+    ): Response<Discover>
 }

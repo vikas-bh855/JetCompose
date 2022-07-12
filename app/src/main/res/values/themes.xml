@@ -18,15 +18,7 @@
             @android:color/transparent
         </item>
     </style>
-    <style name="RoundedTextView" parent="Widget.MaterialComponents.TextView">
-        <item name="shapeAppearanceMediumComponent">@style/shapeApperanceTextView</item>
-        <item name="cornerRadius">10dp</item>
-    </style>
 
-    <style name="shapeApperanceTextView" parent="ShapeAppearance.MaterialComponents.MediumComponent">
-        <item name="cornerRadius">10dp</item>
-        <item name="cornerSize">10dp</item>
-    </style>
     <style name="Theme.JetCompose.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

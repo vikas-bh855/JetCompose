@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -43,12 +44,12 @@ import com.example.jetcompose.data.models.DiscoverResults
 import com.example.jetcompose.data.models.DiscoverResultsParameterProvider
 import com.example.jetcompose.fontFamilyPR
 import com.example.jetcompose.formattedDate
-import com.example.jetcompose.presentation.utils.colorGreenDark
-import com.example.jetcompose.presentation.utils.colorOffWhite
-import com.example.jetcompose.presentation.utils.colorOffWhiteDark
-import com.example.jetcompose.presentation.utils.colorWhite
 import com.example.jetcompose.presentation.viewmodel.DetailViewModel
 import com.example.jetcompose.srcImagePath
+import com.example.jetcompose.ui.theme.colorGreenDark
+import com.example.jetcompose.ui.theme.colorOffWhite
+import com.example.jetcompose.ui.theme.colorOffWhiteDark
+import com.example.jetcompose.ui.theme.colorWhite
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -109,17 +110,18 @@ class DetailFragment : Fragment() {
     }
 
 
-    @OptIn(ExperimentalUnitApi::class)
     @Preview
     @Composable
     fun TopLayout(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
         val floatAnimatable = remember { Animatable(30f) }
         val alphaAnimatable = remember { Animatable(0f) }
         val scaleAnimatable = remember { Animatable(1.5f) }
+        val fadeAnimatable = remember { Animatable(0f) }
         LaunchedEffect(discoverResults.poster_path) {
             launch { floatAnimatable.animateTo(0f, tween(800)) }
             launch { alphaAnimatable.animateTo(1f, tween(800)) }
             launch { scaleAnimatable.animateTo(1f, tween(800)) }
+            launch { fadeAnimatable.animateTo(1f, tween(500)) }
         }
         val value = (360 * discoverResults.vote_average.toFloat()) / 10f
         val lengthAnimatable = remember {
@@ -224,7 +226,8 @@ class DetailFragment : Fragment() {
                     Text(
                         modifier = Modifier
                             .zIndex(10f)
-                            .padding(top = 5.dp, bottom = 5.dp, start = 10.dp)
+                            .padding(start = 10.dp)
+                            .align(Alignment.CenterVertically)
                             .clickable {
                                 detailViewModel.getVideoUrl(discoverResults.id.toString())
                             },
@@ -264,6 +267,7 @@ class DetailFragment : Fragment() {
                     )
                     .weight(1.5f)
                     .graphicsLayer {
+                        alpha = alphaAnimatable.value
                         translationX = floatAnimatable.value
                     },
                 contentScale = ContentScale.Crop,
@@ -289,7 +293,6 @@ class DetailFragment : Fragment() {
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun ShowCredits() {
         Text(
