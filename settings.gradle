@@ -40,7 +40,6 @@ dependencyResolutionManagement {
             bundle('retrofit', ['retrofit2', 'retrofit-converter'])
         }
     }
-
 }
 rootProject.name = "JetCompose"
 include ':app'

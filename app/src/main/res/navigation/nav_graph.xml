@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/listFragment"
-        android:name="com.example.jetcompose.presentation.view.ListFragment"
+        android:name="com.example.jetcompose.list.ListFragment"
         android:label="ListFragment">
         <action
             android:id="@+id/action_listFragment_to_detailFragment"
@@ -14,17 +14,17 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.jetcompose.presentation.view.DetailFragment"
+        android:name="com.example.jetcompose.detail.DetailFragment"
         android:label="DetailFragment">
         <argument
             android:name="discoverResults"
-            app:argType="com.example.jetcompose.data.models.DiscoverResults" />
+            app:argType="com.example.jetcompose.models.DiscoverResults" />
 
     </fragment>
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.example.jetcompose.presentation.view.SearchFragment"
+        android:name="com.example.jetcompose.search.SearchFragment"
         android:label="SearchFragment">
 
         <action

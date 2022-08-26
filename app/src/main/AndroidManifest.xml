@@ -14,13 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JetCompose.NoActionBar">
-        <!--   <activity
-               android:name=".presentation.view.MainActivity"
-               android:exported="false"
-               android:label="@string/app_name" />-->
 
         <activity
-            android:name=".presentation.view.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +25,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.view.ProfileActivity" />
+        <activity android:name=".profile.ProfileActivity" />
+
+        <activity android:name=".subscription.Subscription" />
     </application>
 
 </manifest>

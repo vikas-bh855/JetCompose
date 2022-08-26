@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        android:id="@+id/forward_subscription"
+        app:constraintSetEnd="@id/next_subscription"
+        app:constraintSetStart="@id/start_subscription">
+
+        <OnSwipe
+            app:dragDirection="dragLeft"
+            app:touchAnchorSide="right" />
+    </Transition>
+
+    <Transition
+        android:id="@+id/backward_subscription"
+        app:constraintSetEnd="@id/previous_subscription"
+        app:constraintSetStart="@id/start_subscription">
+        <OnSwipe
+            app:dragDirection="dragRight"
+            app:touchAnchorSide="left" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start_subscription">
+        <Constraint
+            android:id="@id/plan1"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/plan2"
+            app:layout_constraintEnd_toEndOf="@id/guide_start"
+            app:layout_constraintTop_toTopOf="@id/plan2" />
+
+        <Constraint
+            android:id="@id/plan2"
+            android:layout_width="300dp"
+            android:layout_height="500dp"
+            android:elevation="10dp"
+            app:layout_constraintEnd_toEndOf="@id/guide_end"
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintTop_toTopOf="@id/guide_top" />
+
+        <Constraint
+            android:id="@id/plan3"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/plan2"
+            app:layout_constraintStart_toStartOf="@id/guide_end"
+            app:layout_constraintTop_toTopOf="@id/plan2" />
+
+        <Constraint
+            android:id="@id/subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/plan2" />
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/previous_subscription">
+        <Constraint
+            android:id="@id/plan1"
+            android:layout_width="300dp"
+            android:layout_height="500dp"
+            android:elevation="10dp"
+            app:layout_constraintEnd_toEndOf="@id/guide_end"
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintTop_toTopOf="@id/guide_top" />
+
+        <Constraint
+            android:id="@id/plan2"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/plan1"
+            app:layout_constraintStart_toStartOf="@id/guide_end"
+            app:layout_constraintTop_toTopOf="@id/plan1" />
+
+        <Constraint
+            android:id="@id/plan3"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:elevation="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/plan1"
+            app:layout_constraintStart_toEndOf="@id/plan2"
+            app:layout_constraintTop_toTopOf="@id/plan1" />
+
+        <Constraint
+            android:id="@id/subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/plan1" />
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/next_subscription">
+
+        <Constraint
+            android:id="@id/plan1"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/plan3"
+            app:layout_constraintEnd_toStartOf="@id/plan2"
+            app:layout_constraintTop_toTopOf="@id/plan3" />
+
+        <Constraint
+            android:id="@id/plan2"
+            android:layout_width="240dp"
+            android:layout_height="400dp"
+            android:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/plan3"
+            app:layout_constraintEnd_toEndOf="@id/guide_start"
+            app:layout_constraintTop_toTopOf="@id/plan3" />
+
+        <Constraint
+            android:id="@id/plan3"
+            android:layout_width="300dp"
+            android:layout_height="500dp"
+            android:elevation="10dp"
+            app:layout_constraintEnd_toEndOf="@id/guide_end"
+            app:layout_constraintStart_toStartOf="@id/guide_start"
+            app:layout_constraintTop_toTopOf="@id/guide_top" />
+
+        <Constraint
+            android:id="@id/subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/plan3" />
+
+    </ConstraintSet>
+
+</MotionScene>
