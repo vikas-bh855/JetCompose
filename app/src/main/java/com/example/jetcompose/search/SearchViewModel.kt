@@ -18,5 +18,4 @@ class SearchViewModel @Inject constructor(private val repository: SearchReposito
     companion object {
         private const val TAG = "SearchViewModel"
     }
-
 }

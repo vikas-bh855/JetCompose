@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layoutDescription="@xml/subscription_scene">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/planBasic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@id/startGuide"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="this is sample text"
+                android:textColor="@color/black"
+                android:textSize="22sp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/planPremium"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cardBackgroundColor="@color/magenta_red"
+            app:layout_constraintEnd_toEndOf="@id/endGuide"
+            app:layout_constraintStart_toStartOf="@id/startGuide"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/planVip"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:cardBackgroundColor="@color/grey_dark"
+            app:layout_constraintStart_toEndOf="@id/endGuide"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/startGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.33" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/endGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.66" />
+
+        <androidx.constraintlayout.helper.widget.Carousel
+            android:id="@+id/carouselAdapter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:carousel_backwardTransition="@id/backward"
+            app:carousel_forwardTransition="@id/forward"
+            app:carousel_nextState="@id/next"
+            app:carousel_firstView="@+id/planBasic"
+            app:carousel_previousState="@id/previous"
+            app:constraint_referenced_ids="planBasic, planPremium, planVip" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+</LinearLayout>

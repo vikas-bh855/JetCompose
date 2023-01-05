@@ -38,7 +38,7 @@ import androidx.core.view.WindowCompat
 import coil.compose.rememberAsyncImagePainter
 import com.example.jetcompose.R
 import com.example.jetcompose.subscription.Subscription
-import com.example.jetcompose.ui.theme.*
+import com.example.jetcompose.theme.*
 import com.example.jetcompose.utils.fontFamilyPR
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay

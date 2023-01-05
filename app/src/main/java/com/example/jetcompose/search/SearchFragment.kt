@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -17,9 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -29,15 +26,13 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.rememberImagePainter
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.R
 import com.example.jetcompose.utils.fontFamilyPR
-import com.example.jetcompose.utils.srcImagePath
-import com.example.jetcompose.ui.theme.colorOffWhite
+import com.example.jetcompose.theme.colorOffWhite
+import com.example.jetcompose.utils.ItemImage
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -134,38 +129,10 @@ class SearchFragment : Fragment() {
     fun SearchGrid(searchList: LazyPagingItems<DiscoverResults>) {
         LazyVerticalGrid(columns = GridCells.Fixed(3), content = {
             items(searchList.itemCount) { index ->
-                Image(discoverResults = searchList.peek(index)!!)
+                ItemImage(discoverResults = searchList.peek(index)!!, fragment = this@SearchFragment)
             }
         })
 
-    }
-
-
-    @Composable
-    fun Image(
-        discoverResults: DiscoverResults,
-    ) {
-        BoxWithConstraints {
-            Image(
-                painter = rememberImagePainter(data = discoverResults.poster_path.srcImagePath,
-                    builder = {
-                        crossfade(true)
-                    }),
-                contentDescription = discoverResults.title,
-                modifier = Modifier
-                    .clickable {
-                        val directions =
-                            SearchFragmentDirections.actionSearchFragmentToActionDetailFragment(
-                                discoverResults
-                            )
-                        findNavController().navigate(directions)
-                    }
-                    .height(maxWidth * 16 / 11)
-                    .padding(5.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Fit,
-            )
-        }
     }
 }
 

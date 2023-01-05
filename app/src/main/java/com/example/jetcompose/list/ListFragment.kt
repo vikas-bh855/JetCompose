@@ -2,6 +2,7 @@ package com.example.jetcompose.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -45,16 +44,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.jetcompose.R
 import com.example.jetcompose.models.DiscoverParameterProvider
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.DiscoverResultsParameterProvider
-import com.example.jetcompose.utils.fontFamilyPR
-import com.example.jetcompose.utils.Loader
 import com.example.jetcompose.profile.ProfileActivity
+import com.example.jetcompose.theme.*
+import com.example.jetcompose.utils.ItemImage
+import com.example.jetcompose.utils.Loader
+import com.example.jetcompose.utils.fontFamilyPR
 import com.example.jetcompose.utils.srcImagePath
-import com.example.jetcompose.ui.theme.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
@@ -62,11 +61,11 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.absoluteValue
 
-
 @ExperimentalPagerApi
 @ExperimentalMaterialApi
 @AndroidEntryPoint
 class ListFragment : Fragment() {
+
     private val listViewModel by viewModels<ListViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,18 +103,13 @@ class ListFragment : Fragment() {
             targetValue = if (isClick) -45f else 0f,
             animationSpec = tween(300)
         )
-        var color by remember {
-            mutableStateOf(0x00000000)
-        }
         Scaffold(
             floatingActionButton = {
                 FloatingActionButton(
                     backgroundColor = colorAppBackground,
                     shape = CircleShape,
                     onClick = {
-                        startActivity(
-                            Intent(requireContext(), ProfileActivity::class.java)
-                        )
+                        startActivity(Intent(requireContext(), ProfileActivity::class.java))
                     },
                     modifier = Modifier
                         .size(50.dp)
@@ -140,7 +134,6 @@ class ListFragment : Fragment() {
                         painter = painterResource(id = R.drawable.setting),
                         contentDescription = ""
                     )
-
                 }
                 FloatingActionButton(
                     backgroundColor = colorAppBackground,
@@ -178,10 +171,10 @@ class ListFragment : Fragment() {
             },
             isFloatingActionButtonDocked = true,
             floatingActionButtonPosition = FabPosition.End,
-            backgroundColor = Color(color).copy(alpha = 0.2f)
+            backgroundColor = colorAppBackground
         )
         {
-            val mapDiscover = listViewModel.listDiscover.value.toSortedMap()
+            val mapDiscover = listViewModel.listDiscover.value
             val listBanner = listViewModel.listTrending.collectAsState()
             val listNowPlaying = listViewModel.listNowPlaying.value
             val listSorted = mapDiscover.keys.sorted().toMutableList()
@@ -191,9 +184,7 @@ class ListFragment : Fragment() {
             LazyColumn {
                 items(listSorted) { genreName ->
                     when (genreName) {
-                        "Banner" -> Banner(listBanner.value) {
-                            color = it
-                        }
+                        "Banner" -> Banner(listBanner.value)
                         "Now Playing" -> NowPlaying(genreName, listNowPlaying)
                         else -> Discover(genreName, mapDiscover[genreName]!!)
                     }
@@ -202,76 +193,45 @@ class ListFragment : Fragment() {
         }
     }
 
-    private var isLoaded = 0
-
     @Preview
     @Composable
-    fun Banner(
-        @PreviewParameter(DiscoverResultsParameterProvider::class) listBanner: List<DiscoverResults>,
-        color: (Int) -> Unit = {}
-    ) {
-//        val pagerState = rememberPagerState()
-//        if (listBanner.isNotEmpty()) {
-//            val url = listBanner[pagerState.currentPage].backdrop_path.srcImagePath
-//            LaunchedEffect(key1 = url) {
-//                val request = ImageRequest.Builder(requireContext())
-//                    .data(url)
-//                    .size(128)
-//                    .allowHardware(false).build()
-//                val bitmap =
-//                    ImageLoader(requireContext()).execute(request).drawable?.toBitmap()!!
-//                withContext(Dispatchers.Default) {
-//                    Palette.from(bitmap).maximumColorCount(4)
-//                        .generate { it ->
-//                            it?.swatches?.let { swatch ->
-//                                swatch.sortedByDescending {
-//                                    it.population
-//                                }
-//                            }?.let {
-//                                color(it[0].rgb)
-//                            }
-//                        }
-//                }
-//            }
-//        }
+    fun Banner(@PreviewParameter(DiscoverResultsParameterProvider::class) listBanner: List<DiscoverResults>) {
         HorizontalPager(
             itemSpacing = (-40).dp,
             count = listBanner.size,
             contentPadding = PaddingValues(horizontal = 30.dp),
             modifier = Modifier.padding(top = 30.dp, bottom = 10.dp)
         ) { pager ->
-            BoxWithConstraints {
-                Card(
-                    backgroundColor = Color.Transparent,
-                    modifier = Modifier
-                        .graphicsLayer {
-                            val pageOffset = calculateCurrentOffsetForPage(pager).absoluteValue
-                            val dp = lerp(
-                                start = 2f.toDp(),
-                                stop = 2.6f.toDp(),
-                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                            )
-                            scaleX = dp.value
-                            scaleY = dp.value
-                        }
-                        .fillMaxWidth()
-                        .aspectRatio(16 / 9f), elevation = 10.dp,
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxSize()
+            if (pager > 0)
+                Box {
+                    Card(backgroundColor = Color.Transparent,
+                        modifier = Modifier
+                            .graphicsLayer {
+                                val pageOffset = calculateCurrentOffsetForPage(pager).absoluteValue
+                                val dp = lerp(
+                                    start = 2f.toDp(),
+                                    stop = 2.6f.toDp(),
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                )
+                                if (pager == 1) Log.d(TAG, "Banner: page $pager --$pageOffset")
+                                scaleX = dp.value
+                                scaleY = dp.value
+                            }
+                            .fillMaxWidth()
+                            .aspectRatio(16 / 9f),
+                        shape = RoundedCornerShape(10.dp)
                     ) {
-                        Image(
-                            painter = rememberAsyncImagePainter(model = listBanner[pager].backdrop_path.srcImagePath),
-                            contentDescription = "Banner Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        Text(
-                            text = listBanner[pager].title ?: "",
-                            fontFamily = fontFamilyPR,
-                            color = Color.White,
+                        Box(Modifier.fillMaxSize()) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = listBanner[pager].backdrop_path.srcImagePath),
+                                contentDescription = "Banner Image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Text(
+                                text = listBanner[pager].title ?: "",
+                                fontFamily = fontFamilyPR,
+                                color = Color.White,
                             modifier = Modifier
                                 .padding(5.dp)
                                 .align(Alignment.BottomCenter)
@@ -285,7 +245,6 @@ class ListFragment : Fragment() {
                     }
                 }
             }
-
         }
     }
 
@@ -300,7 +259,7 @@ class ListFragment : Fragment() {
             Title(title = title, 15)
             LazyRow(Modifier.padding(vertical = 7.dp)) {
                 items(listDiscover) { discoverResults ->
-                    Image(discoverResults, 150, 230, 12)
+                    ItemImage(discoverResults, 150, 230, 12, this@ListFragment)
                 }
             }
         }
@@ -341,7 +300,7 @@ class ListFragment : Fragment() {
                 .height(height.dp.plus(30.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(discoverResults)
+            ItemImage(discoverResults, fragment = this@ListFragment)
             Text(
                 text = discoverResults.title,
                 fontFamily = fontFamilyPR,
@@ -368,36 +327,10 @@ class ListFragment : Fragment() {
         )
     }
 
-    @Composable
-    fun Image(
-        discoverResults: DiscoverResults,
-        width: Int = 120,
-        height: Int = 180,
-        cornerSize: Int = 0
-    ) {
-        Image(
-            painter = rememberImagePainter(data = discoverResults.poster_path.srcImagePath,
-                builder = {
-                    crossfade(true)
-                }),
-            contentDescription = discoverResults.title,
-            modifier = Modifier
-                .clickable {
-                    val directions = ListFragmentDirections.actionListFragmentToDetailFragment(
-                        discoverResults
-                    )
-                    findNavController().navigate(directions)
-                }
-                .size(width = width.dp, height = height.dp)
-                .padding(5.dp)
-                .clip(RoundedCornerShape(cornerSize.dp)),
-            contentScale = ContentScale.Crop,
-        )
-    }
-
     companion object {
         private const val TAG = "ListFragment"
     }
 }
+
 
 

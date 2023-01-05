@@ -1,6 +1,9 @@
 package com.example.jetcompose.utils
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +18,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 @Preview
 @Composable
@@ -57,7 +59,6 @@ fun Loader(isLoading: Boolean = true) {
                     )
                 )
             }
-
         }
         BoxWithConstraints {
             val x = with(LocalDensity.current) { maxWidth.toPx() }

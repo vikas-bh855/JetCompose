@@ -1,4 +1,4 @@
-package com.example.jetcompose.ui.theme
+package com.example.jetcompose.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -30,10 +30,12 @@ val colorDarkGrey = Color(0xFF282425)
 val colorLightBlue = Color(0xFFF0F3FF)
 val colorDarkGreyTransparent = Color(0xAB1E1F22)
 val colorSkyGreen = Color(0xFF025353)
-val colorBlue = Color(0xFFEDF6FC)
+val colorPinkLight = Color(0xFFE4BDAE)
+val colorBlue = Color(0xFFB2EBF2)
 
 
 val genreColor1 = Color(0xFFC8E6C9)
 val genreColor2 = Color(0xFFE1BEE7)
 val genreColor3 = Color(0xFFFFF9C4)
 val genreColor4 = Color(0xFFB2DFDB)
+

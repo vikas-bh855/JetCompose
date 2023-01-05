@@ -20,6 +20,7 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
     val listNowPlaying = mutableStateOf(listOf<DiscoverResults>())
     val listTrending: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
     private val error: MutableStateFlow<String> = MutableStateFlow("")
+    private val map = linkedMapOf<String, List<DiscoverResults>>()
 
     init {
         viewModelScope.launch {
@@ -56,7 +57,6 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
         }
     }
 
-    private val map = linkedMapOf<String, List<DiscoverResults>>()
     private fun getDiscoverGenres(genreId: String, genreName: String, size: Int) {
         viewModelScope.launch {
             repository.getDiscoverGenre(genreId = genreId).collect {
