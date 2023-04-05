@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -28,11 +30,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.R
-import com.example.jetcompose.utils.fontFamilyPR
+import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.theme.colorOffWhite
+import com.example.jetcompose.theme.colorPurpleLight
 import com.example.jetcompose.utils.ItemImage
+import com.example.jetcompose.utils.fontFamilyPR
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,7 +46,7 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false).apply {
-            duration = 400
+            duration = 200
         }
     }
 
@@ -129,7 +132,10 @@ class SearchFragment : Fragment() {
     fun SearchGrid(searchList: LazyPagingItems<DiscoverResults>) {
         LazyVerticalGrid(columns = GridCells.Fixed(3), content = {
             items(searchList.itemCount) { index ->
-                ItemImage(discoverResults = searchList.peek(index)!!, fragment = this@SearchFragment)
+                ItemImage(
+                    discoverResults = searchList.peek(index)!!,
+                    fragment = this@SearchFragment
+                )
             }
         })
 

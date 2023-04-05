@@ -5,18 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
+import androidx.compose.animation.graphics.res.animatedVectorResource
+import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
+import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +30,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +41,8 @@ import androidx.compose.ui.zIndex
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.example.jetcompose.R
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.DiscoverResultsParameterProvider
@@ -69,7 +75,7 @@ class DetailFragment : Fragment() {
                 detailViewModel.getMovieCredits(args.discoverResults.id.toString())
                 detailViewModel.getMovieDetails(args.discoverResults.id.toString())
                 Box {
-                    Loader(detailViewModel.movieDetails.value != null)
+                    Loader(detailViewModel.movieDetails.value == null)
                     detailViewModel.movieDetails.value?.let {
                         DetailPage(it)
                         PlayVideo()
@@ -79,7 +85,7 @@ class DetailFragment : Fragment() {
         }
     }
 
-    @Preview
+    @Preview(showSystemUi = true, showBackground = true)
     @Composable
     fun DetailPage(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
         Column(
@@ -103,14 +109,16 @@ class DetailFragment : Fragment() {
                 fontSize = 10.sp,
                 color = colorOffWhite
             )
-            ShowCredits()
+            // ShowCredits()
         }
     }
 
-
-    @Preview
+    @OptIn(ExperimentalAnimationGraphicsApi::class)
     @Composable
-    fun TopLayout(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
+    fun TopLayout(
+        @PreviewParameter(DiscoverResultsParameterProvider::class)
+        discoverResults: DiscoverResults
+    ) {
         val floatAnimatable = remember { Animatable(30f) }
         val alphaAnimatable = remember { Animatable(0f) }
         val scaleAnimatable = remember { Animatable(1.5f) }
@@ -126,7 +134,13 @@ class DetailFragment : Fragment() {
             Animatable(0f)
         }
         LaunchedEffect(discoverResults.vote_average) {
-            lengthAnimatable.animateTo(value, animationSpec = tween(2000))
+            lengthAnimatable.animateTo(
+                value,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
         }
         Row(
             modifier = Modifier
@@ -153,11 +167,11 @@ class DetailFragment : Fragment() {
                             startAngle = -90f,
                             sweepAngle = lengthAnimatable.value,
                             useCenter = false,
-                            style = Stroke(width = 6f),
+                            style = Stroke(width = 8f),
                         )
                     })
                     Text(
-                        text = discoverResults.vote_average.toString(),
+                        text = discoverResults.vote_average.toFloat().toString(),
                         color = colorOffWhite,
                         fontWeight = FontWeight.Bold,
                         fontFamily = fontFamilyPR,
@@ -233,6 +247,23 @@ class DetailFragment : Fragment() {
                         color = colorOffWhiteDark,
                         fontFamily = fontFamilyPR,
                     )
+                    val image = AnimatedImageVector.animatedVectorResource(R.drawable.avd_anim)
+                    var atEnd by remember { mutableStateOf(false) }
+                    Icon(
+                        modifier = Modifier
+                            .clickable {
+                                atEnd = !atEnd
+                            }
+                            .padding(
+                                start = 5.dp,
+                                top = 20.dp,
+                                bottom = 5.dp,
+                                end = 10.dp
+                            )
+                            .size(30.dp),
+                        painter = rememberAnimatedVectorPainter(image, atEnd),
+                        contentDescription = null // decorative element
+                    )
                     Image(
                         modifier = Modifier
                             .padding(start = 5.dp, top = 5.dp, bottom = 5.dp, end = 10.dp)
@@ -246,11 +277,12 @@ class DetailFragment : Fragment() {
                 }
             }
             Image(
-                painter = rememberImagePainter(
-                    data = discoverResults.poster_path.srcImagePath,
-                    builder = {
-                        crossfade(true)
-                    }
+                painter = rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(data = discoverResults.poster_path.srcImagePath)
+                        .apply(block = fun ImageRequest.Builder.() {
+                            crossfade(true)
+                        }).build()
                 ),
                 contentDescription = "Detail Image",
                 modifier = Modifier
@@ -287,12 +319,15 @@ class DetailFragment : Fragment() {
                 false
             )
             startActivity(intent)
-
         }
     }
 
     @Composable
     fun ShowCredits() {
+        val alphaAnimation = remember { Animatable(0f) }
+        LaunchedEffect(alphaAnimation) {
+            alphaAnimation.animateTo(1f, tween(durationMillis = 1000))
+        }
         Text(
             modifier = Modifier.padding(10.dp),
             text = "Credits",
@@ -301,24 +336,21 @@ class DetailFragment : Fragment() {
             fontWeight = FontWeight.Bold,
             color = colorWhite
         )
-        val alphaAnimation = remember { Animatable(0f) }
-        LaunchedEffect(alphaAnimation) {
-            alphaAnimation.animateTo(1f, tween(durationMillis = 1000))
-        }
         val listCrew = detailViewModel.listMovieCrew.collectAsState()
         LazyRow(
             content = {
-                itemsIndexed(listCrew.value) { index, item ->
+                itemsIndexed(listCrew.value) { _, item ->
                     Column(Modifier.padding(start = 10.dp, end = 10.dp)) {
                         Image(
                             modifier = Modifier
                                 .size(80.dp)
                                 .clip(CircleShape),
-                            painter = rememberImagePainter(
-                                data = item.profile_path?.srcImagePath,
-                                builder = {
-                                    crossfade(true)
-                                }
+                            painter = rememberAsyncImagePainter(
+                                ImageRequest.Builder(LocalContext.current)
+                                    .data(data = item.profile_path?.srcImagePath)
+                                    .apply(block = fun ImageRequest.Builder.() {
+                                        crossfade(true)
+                                    }).build()
                             ),
                             contentDescription = "",
                             contentScale = ContentScale.Crop,

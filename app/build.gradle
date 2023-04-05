@@ -9,12 +9,12 @@ plugins {
 apply plugin: TaskTest
 
 android {
-    compileSdk 31
+    compileSdk 32
 
     defaultConfig {
         applicationId "com.demo.jetcompose"
         minSdk 21
-        targetSdk 31
+        targetSdk 32
         versionCode 19
         versionName "1.0"
 
@@ -51,6 +51,9 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    kotlinOptions {
+        freeCompilerArgs = ['-Xjvm-default=compatibility']
+    }
 }
 
 dependencies {
@@ -85,6 +88,7 @@ dependencies {
     implementation libs.bundles.play.core
     implementation libs.bundles.retrofit
     implementation libs.palette
+    implementation libs.datastore
 
     androidTestImplementation libs.compose.test
     debugImplementation libs.compose.tooling.ui

@@ -3,22 +3,28 @@ package com.example.jetcompose.subscription
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight.Companion.W600
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
-import com.example.jetcompose.theme.colorWhite
+import com.example.jetcompose.R
+import com.example.jetcompose.theme.*
 import com.example.jetcompose.utils.fontFamilyPR
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -55,65 +61,96 @@ class Subscription : ComponentActivity() {
     @Preview
     @Composable
     fun SubscriptionPlan() {
-        val updateState = remember { mutableStateOf(0) }
-        HorizontalPager(
-            count = 3,
-            modifier = Modifier
-                .wrapContentWidth(Alignment.Start)
-                .padding(top = 20.dp),
-            contentPadding = PaddingValues(start = 20.dp, end = 150.dp),
-            itemSpacing = 10.dp
-        ) { page: Int ->
-            Column {
-                Log.d("Subscription", "SubscriptionPlan: $page")
-                updateState.value = page
-                Card(Modifier.graphicsLayer {
-                    // Calculate the absolute offset for the current page from the
-                    // scroll position. We use the absolute value which allows us to mirror
-                    // any effects for both directions
-                    val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
-
-                    // We animate the scaleX + scaleY, between 85% and 100%
-                    lerp(
-                        start = 2f.toDp(),
-                        stop = 2.6f.toDp(),
-                        fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                    ).also { scale ->
-                        scaleX = scale.value
-                        scaleY = scale.value
-                    }
-
-                    // We animate the alpha, between 50% and 100%
-                    alpha = lerp(
-                        start = 1f.toDp(),
-                        stop = 2.6f.toDp(),
-                        fraction = (1f - pageOffset.coerceIn(0f, 1f))
-                    ).value
-                }) {
-                    Column(
+        Column {
+            val pageCount = remember { mutableStateOf(0) }
+            val pageState = rememberPagerState()
+            HorizontalPager(
+                count = 3,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                contentPadding = PaddingValues(start = 20.dp, end = 150.dp),
+                itemSpacing = 10.dp,
+                state = pageState
+            ) { page: Int ->
+                Column {
+                    Card(shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
-                            .padding(20.dp)
                             .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = listPlans[page], fontFamily = fontFamilyPR, fontSize = 22.sp
-                        )
-                        Text(
-                            text = listAmount[page],
-                            fontFamily = fontFamilyPR,
-                            fontSize = 16.sp,
-                            fontWeight = W600
-                        )
+                            .graphicsLayer {
+                                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                                lerp(
+                                    start = 2f.toDp(),
+                                    stop = 2.6f.toDp(),
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                ).also { scale ->
+                                    scaleX = scale.value
+                                    scaleY = scale.value
+                                }
+                                alpha = lerp(
+                                    start = 1f.toDp(),
+                                    stop = 2.6f.toDp(),
+                                    fraction = (1f - pageOffset.coerceIn(0f, 1f))
+                                ).value
+                            }) {
+                        Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                            Column(
+                                modifier = Modifier.padding(20.dp)
+                            ) {
+                                Text(
+                                    text = listPlans[page],
+                                    fontFamily = fontFamilyPR,
+                                    fontSize = 22.sp
+                                )
+                                Text(
+                                    text = listAmount[page],
+                                    fontFamily = fontFamilyPR,
+                                    fontSize = 16.sp,
+                                    fontWeight = W600
+                                )
+                            }
+                            val painter = painterResource(id = R.drawable.payment)
+                            Image(
+                                painter,
+                                contentDescription = "payment",
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .size(80.dp)
+                                    .align(Alignment.CenterVertically)
+                            )
+                        }
                     }
                 }
             }
+            LaunchedEffect(key1 = pageState) {
+                snapshotFlow { pageState.currentPage }.collect {
+                    pageCount.value = it
+                    Log.d("TAG", "SubscriptionPlan: $it")
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 10.dp)
+                    .fillMaxWidth()
+            ) {
+                val planDetails = map[listPlans[pageCount.value]]
+                planDetails?.forEach {
+                    Text(
+                        text = it,
+                        color = colorWhite,
+                        fontSize = 18.sp,
+                        fontFamily = fontFamilyPR,
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+            }
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .background(colorPurpleLight)
+                    .padding(7.dp), text = "Subscribe", fontFamily = fontFamilyPR
+            )
         }
 
-        Column() {
-            val planDetails = map[listPlans[updateState.value]]
-            planDetails?.forEach {
-                Text(text = it, color = colorWhite)
-            }
-        }
     }
 }

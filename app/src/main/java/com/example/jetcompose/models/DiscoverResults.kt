@@ -18,7 +18,7 @@ data class DiscoverResults(
 ) : Serializable
 
 
-object DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResults> {
+class DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResults> {
     override val values = sequenceOf(
         DiscoverResults(
             id = 634649,

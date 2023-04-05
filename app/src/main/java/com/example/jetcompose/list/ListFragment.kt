@@ -202,7 +202,6 @@ class ListFragment : Fragment() {
             contentPadding = PaddingValues(horizontal = 30.dp),
             modifier = Modifier.padding(top = 30.dp, bottom = 10.dp)
         ) { pager ->
-            if (pager > 0)
                 Box {
                     Card(backgroundColor = Color.Transparent,
                         modifier = Modifier
@@ -213,7 +212,6 @@ class ListFragment : Fragment() {
                                     stop = 2.6f.toDp(),
                                     fraction = 1f - pageOffset.coerceIn(0f, 1f)
                                 )
-                                if (pager == 1) Log.d(TAG, "Banner: page $pager --$pageOffset")
                                 scaleX = dp.value
                                 scaleY = dp.value
                             }

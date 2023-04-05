@@ -32,6 +32,9 @@ val colorDarkGreyTransparent = Color(0xAB1E1F22)
 val colorSkyGreen = Color(0xFF025353)
 val colorPinkLight = Color(0xFFE4BDAE)
 val colorBlue = Color(0xFFB2EBF2)
+val colorButtonGreen =  Color(0xFF3F744C)
+val colorButtonBlue =  Color(0xFF3789DD)
+val colorTextFieldBG = Color(0xffDAE5DD)
 
 
 val genreColor1 = Color(0xFFC8E6C9)

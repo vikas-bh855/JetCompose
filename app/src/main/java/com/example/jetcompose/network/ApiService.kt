@@ -1,11 +1,9 @@
 package com.example.jetcompose.network
 
 import com.example.jetcompose.models.*
+import com.google.gson.JsonObject
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.QueryMap
+import retrofit2.http.*
 
 interface ApiService {
 
@@ -35,4 +33,16 @@ interface ApiService {
         @Query("query") searchText: String,
         @Query("page") page: Int
     ): Response<Discover>
+
+    /**
+     * Login Token Generation
+     */
+    @GET("authentication/token/new")
+    suspend fun getToken(): Response<Login>
+
+    @POST("authentication/token/validate_with_login")
+    suspend fun login(@Body jsonObject: JsonObject): Response<Login>
+
+    @POST("authentication/session/new")
+    suspend fun createSession(@Body jsonObject: JsonObject): Response<Login>
 }

@@ -17,4 +17,6 @@ val String.formattedDate: String
         SimpleDateFormat("yyyy").format(date)
     }
 
-val fontFamilyPR = FontFamily(Font(R.font.poppinsr))
+val  fontFamilyPR = FontFamily(Font(R.font.poppinsr))
+
+val fontFamilySM = FontFamily(Font(R.font.sacramento))
