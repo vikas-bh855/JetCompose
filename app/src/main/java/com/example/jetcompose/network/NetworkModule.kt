@@ -1,5 +1,6 @@
 package com.example.jetcompose.network
 
+import com.example.jetcompose.utils.Constants
 import com.example.jetcompose.utils.Constants.BASE_URL
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -31,7 +32,7 @@ object NetworkModule {
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .addInterceptor(Interceptor {
             val url = it.request().url.newBuilder()
-                .addQueryParameter("api_key", "1d9b898a212ea52e283351e521e17871").build()
+                .addQueryParameter("api_key", Constants.API_KEY).build()
             return@Interceptor it.proceed(it.request().newBuilder().url(url).build())
         })
         .build()

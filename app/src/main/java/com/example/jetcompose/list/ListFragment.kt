@@ -1,8 +1,8 @@
 package com.example.jetcompose.list
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,17 +13,39 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,26 +65,22 @@ import androidx.compose.ui.zIndex
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.example.jetcompose.R
-import com.example.jetcompose.models.DiscoverParameterProvider
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.DiscoverResultsParameterProvider
 import com.example.jetcompose.profile.ProfileActivity
-import com.example.jetcompose.theme.*
+import com.example.jetcompose.theme.colorDarkGreyTransparent
+import com.example.jetcompose.theme.colorOffWhite
+import com.example.jetcompose.theme.colorWhite
 import com.example.jetcompose.utils.ItemImage
 import com.example.jetcompose.utils.Loader
 import com.example.jetcompose.utils.fontFamilyPR
 import com.example.jetcompose.utils.srcImagePath
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.absoluteValue
 
-@ExperimentalPagerApi
-@ExperimentalMaterialApi
 @AndroidEntryPoint
 class ListFragment : Fragment() {
 
@@ -76,9 +94,7 @@ class ListFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
@@ -88,41 +104,34 @@ class ListFragment : Fragment() {
         }
     }
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Preview(showBackground = true)
     @Composable
     fun Home() {
         var isClick by remember { mutableStateOf(false) }
         val translationAnimation by animateFloatAsState(
-            targetValue = if (isClick) 150f else 0f,
-            animationSpec = spring(
-                dampingRatio = 0.65f,
-                stiffness = Spring.StiffnessLow
+            targetValue = if (isClick) 150f else 0f, animationSpec = spring(
+                dampingRatio = 0.65f, stiffness = Spring.StiffnessLow
             )
         )
         val rotateZ by animateFloatAsState(
-            targetValue = if (isClick) -45f else 0f,
-            animationSpec = tween(300)
+            targetValue = if (isClick) -45f else 0f, animationSpec = tween(300)
         )
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(
-                    backgroundColor = colorAppBackground,
-                    shape = CircleShape,
-                    onClick = {
-                        startActivity(Intent(requireContext(), ProfileActivity::class.java))
-                    },
-                    modifier = Modifier
-                        .size(50.dp)
-                        .graphicsLayer {
-                            translationY = -translationAnimation.times(1.2f)
-                        }) {
+                FloatingActionButton(onClick = {
+                    startActivity(Intent(requireContext(), ProfileActivity::class.java))
+                }, modifier = Modifier
+                    .size(50.dp)
+                    .graphicsLayer {
+                        translationY = -translationAnimation.times(1.2f)
+                    }) {
                     Image(
                         painter = painterResource(id = R.drawable.menu_profile),
                         contentDescription = "",
                     )
                 }
                 FloatingActionButton(
-                    backgroundColor = colorAppBackground,
                     shape = CircleShape,
                     onClick = {},
                     modifier = Modifier
@@ -131,28 +140,22 @@ class ListFragment : Fragment() {
                             translationX = -translationAnimation.times(1.2f)
                         }) {
                     Image(
-                        painter = painterResource(id = R.drawable.setting),
-                        contentDescription = ""
+                        painter = painterResource(id = R.drawable.setting), contentDescription = ""
+                    )
+                }
+                FloatingActionButton(shape = CircleShape, onClick = {
+                    findNavController().navigate(R.id.searchFragment)
+                }, modifier = Modifier
+                    .size(50.dp)
+                    .graphicsLayer {
+                        translationX = -translationAnimation
+                        translationY = -translationAnimation
+                    }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.search), contentDescription = ""
                     )
                 }
                 FloatingActionButton(
-                    backgroundColor = colorAppBackground,
-                    shape = CircleShape,
-                    onClick = {
-                        findNavController().navigate(R.id.searchFragment)
-                    },
-                    modifier = Modifier
-                        .size(50.dp)
-                        .graphicsLayer {
-                            translationX = -translationAnimation
-                            translationY = -translationAnimation
-                        }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = ""
-                    )
-                }
-                FloatingActionButton(backgroundColor = colorDarkGrey,
                     shape = CircleShape,
                     onClick = { isClick = !isClick },
                     modifier = Modifier
@@ -162,31 +165,32 @@ class ListFragment : Fragment() {
                             rotationZ = rotateZ
                         }) {
                     Icon(
-                        Icons.Filled.Add,
+                        imageVector = Icons.Filled.Add,
                         contentDescription = "",
                         tint = Color(0xFFFDF8F2),
                         modifier = Modifier.size(35.dp)
                     )
                 }
-            },
-            isFloatingActionButtonDocked = true,
-            floatingActionButtonPosition = FabPosition.End,
-            backgroundColor = colorAppBackground
-        )
-        {
-            val mapDiscover = listViewModel.listDiscover.value
-            val listBanner = listViewModel.listTrending.collectAsState()
-            val listNowPlaying = listViewModel.listNowPlaying.value
-            val listSorted = mapDiscover.keys.sorted().toMutableList()
-            listSorted.add(0, "Banner")
-            listSorted.add(1, "Now Playing")
-            Loader(listNowPlaying.isEmpty())
-            LazyColumn {
-                items(listSorted) { genreName ->
-                    when (genreName) {
-                        "Banner" -> Banner(listBanner.value)
-                        "Now Playing" -> NowPlaying(genreName, listNowPlaying)
-                        else -> Discover(genreName, mapDiscover[genreName]!!)
+            }, floatingActionButtonPosition = FabPosition.End
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier.padding(innerPadding),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                val mapDiscover = listViewModel.listDiscover.value
+                val listBanner = listViewModel.listTrending.collectAsState()
+                val listNowPlaying = listViewModel.listNowPlaying.value
+                val listSorted = mapDiscover.keys.sorted().toMutableList()
+                listSorted.add(0, "Banner")
+                listSorted.add(1, "Now Playing")
+                Loader(listNowPlaying.isEmpty())
+                LazyColumn {
+                    items(listSorted) { genreName ->
+                        when (genreName) {
+                            "Banner" -> Banner(listBanner.value)
+                            "Now Playing" -> NowPlaying(genreName, listNowPlaying)
+                            else -> Discover(genreName, mapDiscover[genreName]!!)
+                        }
                     }
                 }
             }
@@ -196,40 +200,41 @@ class ListFragment : Fragment() {
     @Preview
     @Composable
     fun Banner(@PreviewParameter(DiscoverResultsParameterProvider::class) listBanner: List<DiscoverResults>) {
+        val pagerState = rememberPagerState(pageCount = {
+            listBanner.size
+        })
         HorizontalPager(
-            itemSpacing = (-40).dp,
-            count = listBanner.size,
+            state = pagerState,
             contentPadding = PaddingValues(horizontal = 30.dp),
             modifier = Modifier.padding(top = 30.dp, bottom = 10.dp)
-        ) { pager ->
-                Box {
-                    Card(backgroundColor = Color.Transparent,
-                        modifier = Modifier
-                            .graphicsLayer {
-                                val pageOffset = calculateCurrentOffsetForPage(pager).absoluteValue
-                                val dp = lerp(
-                                    start = 2f.toDp(),
-                                    stop = 2.6f.toDp(),
-                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                                )
-                                scaleX = dp.value
-                                scaleY = dp.value
-                            }
-                            .fillMaxWidth()
-                            .aspectRatio(16 / 9f),
-                        shape = RoundedCornerShape(10.dp)
-                    ) {
-                        Box(Modifier.fillMaxSize()) {
-                            Image(
-                                painter = rememberAsyncImagePainter(model = listBanner[pager].backdrop_path.srcImagePath),
-                                contentDescription = "Banner Image",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                            Text(
-                                text = listBanner[pager].title ?: "",
-                                fontFamily = fontFamilyPR,
-                                color = Color.White,
+        ) { page ->
+            Box {
+                Card(modifier = Modifier
+                    .graphicsLayer {
+                        val pageOffset =
+                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+
+                        val dp = lerp(
+                            start = 2f.toDp(),
+                            stop = 2.6f.toDp(),
+                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                        )
+                        scaleX = dp.value
+                        scaleY = dp.value
+                    }
+                    .fillMaxWidth()
+                    .aspectRatio(16 / 9f), shape = RoundedCornerShape(10.dp)) {
+                    Box(Modifier.fillMaxSize()) {
+                        Image(
+                            painter = rememberAsyncImagePainter(model = listBanner[page].backdrop_path.srcImagePath),
+                            contentDescription = "Banner Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Text(
+                            text = listBanner[page].title ?: "",
+                            fontFamily = fontFamilyPR,
+                            color = Color.White,
                             modifier = Modifier
                                 .padding(5.dp)
                                 .align(Alignment.BottomCenter)
@@ -246,12 +251,9 @@ class ListFragment : Fragment() {
         }
     }
 
-
-    @Preview
     @Composable
     fun NowPlaying(
-        title: String = "title",
-        @PreviewParameter(DiscoverParameterProvider::class) listDiscover: List<DiscoverResults>,
+        title: String = "title", listDiscover: List<DiscoverResults>,
     ) {
         if (listDiscover.isNotEmpty()) {
             Title(title = title, 15)
@@ -266,13 +268,14 @@ class ListFragment : Fragment() {
     @Preview
     @Composable
     fun Discover(
-        title: String = "title", listDiscover: List<DiscoverResults> = emptyList(),
-        width: Int = 120, height: Int = 180
+        title: String = "title",
+        listDiscover: List<DiscoverResults> = emptyList(),
+        width: Int = 120,
+        height: Int = 180
     ) {
         if (listDiscover.isNotEmpty()) {
             val lazyListState = rememberLazyListState()
-            if (title.isNotBlank())
-                Title(title = title, 15)
+            if (title.isNotBlank()) Title(title = title, 15)
             LazyRow(
                 Modifier.padding(vertical = 7.dp),
                 state = lazyListState,
@@ -288,9 +291,9 @@ class ListFragment : Fragment() {
     @Preview
     @Composable
     fun ShowImage(
-        @PreviewParameter(DiscoverResultsParameterProvider::class)
-        discoverResults: DiscoverResults,
-        width: Int = 120, height: Int = 180
+        @PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults,
+        width: Int = 120,
+        height: Int = 180
     ) {
         Column(
             modifier = Modifier

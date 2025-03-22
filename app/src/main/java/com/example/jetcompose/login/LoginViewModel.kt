@@ -8,6 +8,7 @@ import com.example.jetcompose.models.Login
 import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,7 +18,9 @@ class LoginViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    val loginState = MutableStateFlow("")
+    val loginState: StateFlow<String>
+        field = MutableStateFlow("")
+
     val error = mutableStateOf("")
 
     fun login(userId: String, password: String) {

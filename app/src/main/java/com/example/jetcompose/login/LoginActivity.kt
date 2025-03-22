@@ -4,22 +4,27 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,28 +56,25 @@ class LoginActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(ComposeView(this).apply {
-            setContent {
-                val isLoggedIn = remember { mutableStateOf(false) }
-                lifecycleScope.launchWhenCreated {
-                    dataStore.data.collect {
-                        val sessionId = it[preferenceSession]
-                        if (sessionId.isNullOrBlank())
-                            isLoggedIn.value = true
-                        else startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                    }
+        setContent {
+            val isLoggedIn = remember { mutableStateOf(false) }
+            lifecycleScope.launchWhenCreated {
+                dataStore.data.collect {
+                    val sessionId = it[preferenceSession]
+                    if (sessionId.isNullOrBlank()) isLoggedIn.value = true
+                    else startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 }
-                if (isLoggedIn.value)
-                    Login()
             }
-        })
-        lifecycleScope.launchWhenStarted {
-            loginViewModel.loginState.collect { sessionId ->
-                if (sessionId.isNotBlank()) {
-                    this@LoginActivity.dataStore.edit {
-                        it[preferenceSession] = sessionId
+            if (isLoggedIn.value) Login()
+
+            lifecycleScope.launchWhenStarted {
+                loginViewModel.loginState.collect { sessionId ->
+                    if (sessionId.isNotBlank()) {
+                        this@LoginActivity.dataStore.edit {
+                            it[preferenceSession] = sessionId
+                        }
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     }
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 }
             }
         }
@@ -89,10 +91,12 @@ class LoginActivity : ComponentActivity() {
                 .padding(start = 30.dp, end = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(painter = painterResource(id = R.drawable.app_icon), contentDescription = "App Icon")
+            Image(
+                painter = painterResource(id = R.drawable.app_icon), contentDescription = "App Icon"
+            )
             Spacer(modifier = Modifier.padding(20.dp))
             Text(
-                text = "Login",
+                text = "Sign In",
                 fontFamily = fontFamilyPR,
                 color = colorWhite,
                 fontWeight = FontWeight.Bold,
@@ -116,8 +120,9 @@ class LoginActivity : ComponentActivity() {
                     fontFamily = fontFamilyPR,
                     fontWeight = FontWeight.ExtraBold
                 )
-
             }
+            Spacer(modifier = Modifier.padding(top = 20.dp))
+            Text(text = loginViewModel.error.value)
         }
     }
 

@@ -1,6 +1,13 @@
 import org.gradle.api.initialization.resolve.RepositoriesMode
 
-enableFeaturePreview('VERSION_CATALOGS')
+
+pluginManagement {
+    {
+        plugins {
+            id 'com.google.dagger.hilt.android' version '2.51.1' apply false
+        }
+    }
+}
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -9,38 +16,53 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         libs {
-            version('compose', '1.2.0')
+            version('compose', '1.7.8')
             version('core-java', '1.10.2')
             version('core-ktx', '1.8.1')
             version('retrofit2', '2.9.0')
             version('palette', '28.0.0')
             version('datastore', '1.0.0')
+            version('hilt', '2.51.1')
+            version('constraintlayout', '2.1.2')
+            version('composepaging', '3.3.6')
+            version('composeconstraint', '1.0.1')
+            version('composematerial', '1.3.1')
 
             //retrofit
-            alias('retrofit2').to('com.squareup.retrofit2', 'retrofit').versionRef('retrofit2')
-            alias('retrofit-converter').to('com.squareup.retrofit2', 'converter-gson').versionRef('retrofit2')
+            library('retrofit2', 'com.squareup.retrofit2', 'retrofit').versionRef('retrofit2')
+            library('retrofit-converter', 'com.squareup.retrofit2', 'converter-gson').versionRef('retrofit2')
 
             //compose
-            alias('compose-ui').to('androidx.compose.ui', 'ui').versionRef('compose')
-            alias('compose-material').to('androidx.compose.material', 'material').versionRef('compose')
-            alias('compose-tooling-preview').to('androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
-            alias('androidx-compose-animation').to('androidx.compose.animation', 'animation-graphics').versionRef('compose')
+            library('compose-ui', 'androidx.compose.ui', 'ui').versionRef('compose')
+            library('compose-material', 'androidx.compose.material', 'material').versionRef('compose')
+            library('compose-tooling-preview', 'androidx.compose.ui', 'ui-tooling-preview').versionRef('compose')
+            library('androidx-compose-animation', 'androidx.compose.animation', 'animation-graphics').versionRef('compose')
+            library('compose-constraint', 'androidx.constraintlayout', 'constraintlayout-compose').versionRef('composeconstraint')
+            library('compose-paging', 'androidx.paging', 'paging-compose').versionRef('composepaging')
+            library('compose-material', 'androidx.compose.material3', 'material3').versionRef('composematerial')
 
             //compose test
-            alias('compose-test').to('androidx.compose.ui', 'ui-test-junit4').versionRef('compose')
-            alias('compose-tooling-ui').to('androidx.compose.ui', 'ui-tooling').versionRef('compose')
+            library('compose-test', 'androidx.compose.ui', 'ui-test-junit4').versionRef('compose')
+            library('compose-tooling-ui', 'androidx.compose.ui', 'ui-tooling').versionRef('compose')
 
             //play core
-            alias('play-core-java').to('com.google.android.play', 'core').versionRef('core-java')
-            alias('play-core-ktx').to('com.google.android.play', 'core-ktx').versionRef('core-ktx')
+            library('play-core-java', 'com.google.android.play', 'core').versionRef('core-java')
+            library('play-core-ktx', 'com.google.android.play', 'core-ktx').versionRef('core-ktx')
 
             //palette
-            alias('palette').to('com.android.support', 'palette-v7').versionRef('palette')
+            library('palette', 'com.android.support', 'palette-v7').versionRef('palette')
 
             //data store
-            alias('datastore').to('androidx.datastore', 'datastore-preferences').versionRef('datastore')
+            library('datastore', 'androidx.datastore', 'datastore-preferences').versionRef('datastore')
 
-            bundle('compose', ['compose-ui', 'compose-material', 'compose-tooling-preview', 'androidx-compose-animation'])
+            //hilt
+            library('hilt-android', 'com.google.dagger', 'hilt-android').versionRef('hilt')
+            library('hilt-compiler', 'com.google.dagger', 'hilt-compiler').versionRef('hilt')
+
+            library('constraintlayout', 'androidx.constraintlayout', 'constraintlayout').versionRef('constraintlayout')
+
+            bundle('compose', ['compose-ui', 'compose-material', 'compose-tooling-preview',
+                               'androidx-compose-animation', 'compose-constraint', 'compose-paging', 'compose-material'])
             bundle('play-core', ['play-core-java', 'play-core-ktx'])
             bundle('retrofit', ['retrofit2', 'retrofit-converter'])
         }

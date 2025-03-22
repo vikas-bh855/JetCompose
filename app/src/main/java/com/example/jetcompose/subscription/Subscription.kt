@@ -3,18 +3,27 @@ package com.example.jetcompose.subscription
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -24,16 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import com.example.jetcompose.R
-import com.example.jetcompose.theme.*
+import com.example.jetcompose.theme.colorPurpleLight
+import com.example.jetcompose.theme.colorWhite
 import com.example.jetcompose.utils.fontFamilyPR
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import com.google.accompanist.pager.rememberPagerState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class)
 @AndroidEntryPoint
 class Subscription : ComponentActivity() {
 
@@ -63,22 +68,24 @@ class Subscription : ComponentActivity() {
     fun SubscriptionPlan() {
         Column {
             val pageCount = remember { mutableStateOf(0) }
-            val pageState = rememberPagerState()
+            val pagerState = rememberPagerState(pageCount = {3})
             HorizontalPager(
-                count = 3,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp),
                 contentPadding = PaddingValues(start = 20.dp, end = 150.dp),
-                itemSpacing = 10.dp,
-                state = pageState
+                state = pagerState
             ) { page: Int ->
                 Column {
                     Card(shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                             .graphicsLayer {
-                                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                                val pageOffset = (
+                                    (pagerState.currentPage - page) + pagerState
+                                        .currentPageOffsetFraction
+                                    ).absoluteValue
+
                                 lerp(
                                     start = 2f.toDp(),
                                     stop = 2.6f.toDp(),
@@ -122,8 +129,8 @@ class Subscription : ComponentActivity() {
                     }
                 }
             }
-            LaunchedEffect(key1 = pageState) {
-                snapshotFlow { pageState.currentPage }.collect {
+            LaunchedEffect(key1 = pagerState) {
+                snapshotFlow { pagerState.currentPage }.collect {
                     pageCount.value = it
                     Log.d("TAG", "SubscriptionPlan: $it")
                 }

@@ -8,14 +8,28 @@ import androidx.compose.animation.core.Spring.DampingRatioLowBouncy
 import androidx.compose.animation.core.Spring.StiffnessLow
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -35,15 +49,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.core.view.WindowCompat
-import coil.compose.rememberAsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import com.example.jetcompose.R
 import com.example.jetcompose.subscription.Subscription
-import com.example.jetcompose.theme.*
+import com.example.jetcompose.theme.colorAppBackground
+import com.example.jetcompose.theme.colorLightBlue
+import com.example.jetcompose.theme.genreColor1
+import com.example.jetcompose.theme.genreColor2
+import com.example.jetcompose.theme.genreColor3
+import com.example.jetcompose.theme.genreColor4
 import com.example.jetcompose.utils.fontFamilyPR
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
-@ExperimentalMaterialApi
 @AndroidEntryPoint
 class ProfileActivity : AppCompatActivity() {
 
@@ -154,7 +172,7 @@ class ProfileActivity : AppCompatActivity() {
                             onClick = { },
                             modifier = Modifier.padding(10.dp),
                             shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = colorLightBlue)
+                            colors = ButtonDefaults.buttonColors(containerColor = colorLightBlue)
                         ) {
                             Text(text = "Edit Profile", color = Color(0Xff081119))
                         }
@@ -169,14 +187,14 @@ class ProfileActivity : AppCompatActivity() {
                             },
                             modifier = Modifier.padding(10.dp),
                             shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = colorLightBlue)
+                            colors = ButtonDefaults.buttonColors(containerColor = colorLightBlue)
                         ) {
                             Text(text = "Subscribe", color = Color(0Xff081119))
                         }
                     }
                 }
                 Card(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp)
                         .constrainAs(genres) {
@@ -188,8 +206,7 @@ class ProfileActivity : AppCompatActivity() {
                             translationY = animateGenres.value
                         },
                     shape = RoundedCornerShape(10.dp),
-                    backgroundColor = Color(0xFF292125),
-                    elevation = 5.dp
+                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.Start,
@@ -216,7 +233,6 @@ class ProfileActivity : AppCompatActivity() {
                             itemsIndexed(favGenres) { index, item ->
                                 Card(
                                     shape = RoundedCornerShape(20.dp),
-                                    backgroundColor = genreColors[index],
                                 ) {
                                     Text(
                                         modifier = Modifier.padding(
@@ -238,7 +254,7 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
                 Card(
-                    Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp)
                         .constrainAs(recently) {
@@ -250,8 +266,7 @@ class ProfileActivity : AppCompatActivity() {
                             translationY = animateWatched.value
                         },
                     shape = RoundedCornerShape(10.dp),
-                    backgroundColor = Color(0xFF202726),
-                    elevation = 5.dp
+                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.Start,

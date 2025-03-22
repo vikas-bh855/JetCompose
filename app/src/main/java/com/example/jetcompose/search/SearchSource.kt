@@ -1,5 +1,6 @@
 package com.example.jetcompose.search
 
+import android.graphics.pdf.LoadParams
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.jetcompose.models.Discover
@@ -9,7 +10,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 
-class SearchSource constructor(private val searchText: String, private val searchRepository: SearchRepository) :
+class SearchSource(private val searchText: String, private val searchRepository: SearchRepository) :
     PagingSource<Int, DiscoverResults>() {
 
     override fun getRefreshKey(state: PagingState<Int, DiscoverResults>): Int? {

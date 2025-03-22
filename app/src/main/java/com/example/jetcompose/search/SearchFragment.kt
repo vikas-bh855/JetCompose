@@ -4,21 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -33,7 +36,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.jetcompose.R
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.theme.colorOffWhite
-import com.example.jetcompose.theme.colorPurpleLight
 import com.example.jetcompose.utils.ItemImage
 import com.example.jetcompose.utils.fontFamilyPR
 import com.google.android.material.transition.MaterialSharedAxis
@@ -73,12 +75,11 @@ class SearchFragment : Fragment() {
                 .padding(top = 30.dp)
         ) {
             Card(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .padding(7.dp),
                 shape = RoundedCornerShape(10.dp),
-                backgroundColor = Color(0xFF23232E)
             ) {
                 ConstraintLayout(
                     Modifier

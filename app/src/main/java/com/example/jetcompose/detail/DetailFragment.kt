@@ -12,15 +12,36 @@ import androidx.compose.animation.graphics.ExperimentalAnimationGraphicsApi
 import androidx.compose.animation.graphics.res.animatedVectorResource
 import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
 import androidx.compose.animation.graphics.vector.AnimatedImageVector
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,8 +62,9 @@ import androidx.compose.ui.zIndex
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.jetcompose.R
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.DiscoverResultsParameterProvider
@@ -57,7 +79,7 @@ import com.example.jetcompose.utils.srcImagePath
 import com.google.android.youtube.player.YouTubeStandalonePlayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
@@ -66,9 +88,7 @@ class DetailFragment : Fragment() {
     private val detailViewModel by viewModels<DetailViewModel>()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
@@ -107,7 +127,8 @@ class DetailFragment : Fragment() {
                 text = discoverResults.overview,
                 fontFamily = fontFamilyPR,
                 fontSize = 10.sp,
-                color = colorOffWhite
+                color = colorOffWhite,
+                fontWeight = FontWeight.Bold
             )
             // ShowCredits()
         }
@@ -116,8 +137,7 @@ class DetailFragment : Fragment() {
     @OptIn(ExperimentalAnimationGraphicsApi::class)
     @Composable
     fun TopLayout(
-        @PreviewParameter(DiscoverResultsParameterProvider::class)
-        discoverResults: DiscoverResults
+        @PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults
     ) {
         val floatAnimatable = remember { Animatable(30f) }
         val alphaAnimatable = remember { Animatable(0f) }
@@ -135,17 +155,16 @@ class DetailFragment : Fragment() {
         }
         LaunchedEffect(discoverResults.vote_average) {
             lengthAnimatable.animateTo(
-                value,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
+                value, animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow
                 )
             )
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp), horizontalArrangement = Arrangement.End
+                .height(400.dp),
+            horizontalArrangement = Arrangement.End
         ) {
             Column(
                 modifier = Modifier
@@ -184,8 +203,7 @@ class DetailFragment : Fragment() {
                         Modifier.align(Alignment.CenterVertically)
                     )
                     Text(
-                        modifier = Modifier
-                            .padding(start = 10.dp),
+                        modifier = Modifier.padding(start = 10.dp),
                         text = discoverResults.release_date.formattedDate,
                         color = colorOffWhite,
                         fontWeight = FontWeight.Bold,
@@ -199,8 +217,7 @@ class DetailFragment : Fragment() {
                         Modifier.align(Alignment.CenterVertically)
                     )
                     Text(
-                        modifier = Modifier
-                            .padding(start = 10.dp),
+                        modifier = Modifier.padding(start = 10.dp),
                         text = Locale(discoverResults.original_language).displayLanguage,
                         color = colorOffWhite,
                         fontWeight = FontWeight.Bold,
@@ -217,17 +234,16 @@ class DetailFragment : Fragment() {
                     color = colorOffWhiteDark,
                     fontFamily = fontFamilyPR,
                 )
-                if (discoverResults.genres.isNotEmpty())
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 20.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(color = Color(0xFF101010))
-                            .padding(4.dp),
-                        text = discoverResults.genres[1].name,
-                        color = colorOffWhiteDark,
-                        fontFamily = fontFamilyPR,
-                    )
+                if (discoverResults.genres.isNotEmpty()) Text(
+                    modifier = Modifier
+                        .padding(top = 20.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(color = Color(0xFF101010))
+                        .padding(4.dp),
+                    text = discoverResults.genres[1].name,
+                    color = colorOffWhiteDark,
+                    fontFamily = fontFamilyPR,
+                )
 
                 Row(
                     modifier = Modifier
@@ -249,24 +265,22 @@ class DetailFragment : Fragment() {
                     )
                     val image = AnimatedImageVector.animatedVectorResource(R.drawable.avd_anim)
                     var atEnd by remember { mutableStateOf(false) }
-                    Icon(
-                        modifier = Modifier
-                            .clickable {
-                                atEnd = !atEnd
-                            }
-                            .padding(
-                                start = 5.dp,
-                                top = 20.dp,
-                                bottom = 5.dp,
-                                end = 10.dp
-                            )
-                            .size(30.dp),
+                    Icon(modifier = Modifier
+                        .clickable {
+                            atEnd = !atEnd
+                        }
+                        .padding(
+                            start = 5.dp, top = 20.dp, bottom = 5.dp, end = 10.dp
+                        )
+                        .size(30.dp),
                         painter = rememberAnimatedVectorPainter(image, atEnd),
                         contentDescription = null // decorative element
                     )
                     Image(
                         modifier = Modifier
-                            .padding(start = 5.dp, top = 5.dp, bottom = 5.dp, end = 10.dp)
+                            .padding(
+                                start = 5.dp, top = 5.dp, bottom = 5.dp, end = 10.dp
+                            )
                             .graphicsLayer {
                                 scaleY = scaleAnimatable.value
                                 scaleX = scaleAnimatable.value
@@ -290,9 +304,7 @@ class DetailFragment : Fragment() {
                     .fillMaxHeight()
                     .clip(
                         RoundedCornerShape(
-                            topStart = 20.dp,
-                            bottomStart = 20.dp,
-                            bottomEnd = 20.dp
+                            topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp
                         )
                     )
                     .weight(1.5f)
@@ -311,12 +323,7 @@ class DetailFragment : Fragment() {
         val videoUrl = detailViewModel.videoUrl.value
         if (videoUrl.isNotBlank()) {
             val intent = YouTubeStandalonePlayer.createVideoIntent(
-                requireActivity(),
-                "1234567890",
-                videoUrl,
-                0,
-                true,
-                false
+                requireActivity(), "1234567890", videoUrl, 0, true, false
             )
             startActivity(intent)
         }
