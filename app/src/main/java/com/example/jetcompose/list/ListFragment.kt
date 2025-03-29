@@ -1,6 +1,5 @@
 package com.example.jetcompose.list
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -104,7 +103,6 @@ class ListFragment : Fragment() {
         }
     }
 
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Preview(showBackground = true)
     @Composable
     fun Home() {

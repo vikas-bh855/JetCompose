@@ -58,7 +58,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -229,7 +228,7 @@ class DetailFragment : Fragment() {
                         .padding(top = 20.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(color = Color(0xFF101010))
-                        .padding(4.dp),
+                        .padding(5.dp),
                     text = discoverResults.genres!![0].name,
                     color = colorOffWhiteDark,
                     fontFamily = fontFamilyPR,
@@ -239,7 +238,7 @@ class DetailFragment : Fragment() {
                         .padding(top = 20.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(color = Color(0xFF101010))
-                        .padding(4.dp),
+                        .padding(5.dp),
                     text = discoverResults.genres[1].name,
                     color = colorOffWhiteDark,
                     fontFamily = fontFamilyPR,
@@ -249,38 +248,33 @@ class DetailFragment : Fragment() {
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF101010)),
+                        .background(Color(0xFF101010))
+                        .padding(5.dp),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     Text(
                         modifier = Modifier
-                            .zIndex(10f)
-                            .padding(start = 10.dp)
                             .align(Alignment.CenterVertically)
                             .clickable {
                                 detailViewModel.getVideoUrl(discoverResults.id.toString())
                             },
                         text = "Play",
                         color = colorOffWhiteDark,
-                        fontFamily = fontFamilyPR,
+                        fontFamily = fontFamilyPR
+
                     )
                     val image = AnimatedImageVector.animatedVectorResource(R.drawable.avd_anim)
                     var atEnd by remember { mutableStateOf(false) }
-                    Icon(modifier = Modifier
+                    Icon(modifier = Modifier.align(Alignment.CenterVertically)
                         .clickable {
                             atEnd = !atEnd
                         }
-                        .padding(
-                            start = 5.dp, top = 20.dp, bottom = 5.dp, end = 10.dp
-                        )
                         .size(30.dp),
                         painter = rememberAnimatedVectorPainter(image, atEnd),
-                        contentDescription = null // decorative element
+                        contentDescription = "Add" // decorative element
                     )
                     Image(
-                        modifier = Modifier
-                            .padding(
-                                start = 5.dp, top = 5.dp, bottom = 5.dp, end = 10.dp
-                            )
+                        modifier = Modifier.align(Alignment.CenterVertically)
                             .graphicsLayer {
                                 scaleY = scaleAnimatable.value
                                 scaleX = scaleAnimatable.value

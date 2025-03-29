@@ -27,6 +27,7 @@ dependencyResolutionManagement {
             version('composepaging', '3.3.6')
             version('composeconstraint', '1.0.1')
             version('composematerial', '1.3.1')
+            version('coil', '3.1.0')
 
             //retrofit
             library('retrofit2', 'com.squareup.retrofit2', 'retrofit').versionRef('retrofit2')
@@ -61,10 +62,17 @@ dependencyResolutionManagement {
 
             library('constraintlayout', 'androidx.constraintlayout', 'constraintlayout').versionRef('constraintlayout')
 
+            library('coil-compose', 'io.coil-kt.coil3', 'coil-network-okhttp').versionRef('coil')
+            library('coil-network', 'io.coil-kt.coil3', 'coil-compose').versionRef('coil')
+
+
+
+            //bundle
             bundle('compose', ['compose-ui', 'compose-material', 'compose-tooling-preview',
                                'androidx-compose-animation', 'compose-constraint', 'compose-paging', 'compose-material'])
             bundle('play-core', ['play-core-java', 'play-core-ktx'])
             bundle('retrofit', ['retrofit2', 'retrofit-converter'])
+            bundle('coil', ['coil-compose', 'coil-network'])
         }
     }
 }
