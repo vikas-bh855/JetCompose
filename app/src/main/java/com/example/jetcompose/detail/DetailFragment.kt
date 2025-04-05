@@ -29,10 +29,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -113,27 +116,13 @@ class DetailFragment : Fragment() {
                 .verticalScroll(enabled = true, state = ScrollState(0))
         ) {
             TopLayout(discoverResults)
-            Text(
-                modifier = Modifier.padding(10.dp),
-                text = "Description",
-                fontFamily = fontFamilyPR,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = colorWhite
-            )
-            Text(
-                modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                text = discoverResults.overview,
-                fontFamily = fontFamilyPR,
-                fontSize = 10.sp,
-                color = colorOffWhite,
-                fontWeight = FontWeight.Bold
-            )
-            // ShowCredits()
+            Description(discoverResults)
+            ShowCredits()
+            ShowRecommendations()
         }
     }
 
-    @OptIn(ExperimentalAnimationGraphicsApi::class)
+    @OptIn(ExperimentalAnimationGraphicsApi::class, ExperimentalMaterial3Api::class)
     @Composable
     fun TopLayout(
         @PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults
@@ -223,17 +212,7 @@ class DetailFragment : Fragment() {
                         fontFamily = fontFamilyPR,
                     )
                 }
-                Text(
-                    modifier = Modifier
-                        .padding(top = 20.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(color = Color(0xFF101010))
-                        .padding(5.dp),
-                    text = discoverResults.genres!![0].name,
-                    color = colorOffWhiteDark,
-                    fontFamily = fontFamilyPR,
-                )
-                if (discoverResults.genres.isNotEmpty()) Text(
+                if (!discoverResults.genres.isNullOrEmpty()) Text(
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .clip(RoundedCornerShape(10.dp))
@@ -243,46 +222,32 @@ class DetailFragment : Fragment() {
                     color = colorOffWhiteDark,
                     fontFamily = fontFamilyPR,
                 )
-
-                Row(
+                val image = AnimatedImageVector.animatedVectorResource(R.drawable.avd_anim)
+                var atEnd by remember { mutableStateOf(false) }
+                Icon(
                     modifier = Modifier
-                        .padding(top = 20.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0xFF101010))
-                        .padding(5.dp),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .clickable {
-                                detailViewModel.getVideoUrl(discoverResults.id.toString())
-                            },
-                        text = "Play",
-                        color = colorOffWhiteDark,
-                        fontFamily = fontFamilyPR
-
-                    )
-                    val image = AnimatedImageVector.animatedVectorResource(R.drawable.avd_anim)
-                    var atEnd by remember { mutableStateOf(false) }
-                    Icon(modifier = Modifier.align(Alignment.CenterVertically)
                         .clickable {
                             atEnd = !atEnd
                         }
                         .size(30.dp),
-                        painter = rememberAnimatedVectorPainter(image, atEnd),
-                        contentDescription = "Add" // decorative element
-                    )
-                    Image(
-                        modifier = Modifier.align(Alignment.CenterVertically)
-                            .graphicsLayer {
-                                scaleY = scaleAnimatable.value
-                                scaleX = scaleAnimatable.value
-                            },
-                        painter = painterResource(id = R.drawable.play),
-                        contentDescription = "Play"
-                    )
-                }
+                    painter = rememberAnimatedVectorPainter(image, atEnd),
+                    contentDescription = "Add", // decorative element,
+                    tint = {
+                        Color(0xFF758486)
+                    }
+                )
+                Image(
+                    modifier = Modifier
+                        .clickable {
+                            detailViewModel.getVideoUrl(discoverResults.id.toString())
+                        }
+                        .graphicsLayer {
+                            scaleY = scaleAnimatable.value
+                            scaleX = scaleAnimatable.value
+                        },
+                    painter = painterResource(id = R.drawable.play),
+                    contentDescription = "Play"
+                )
             }
             Image(
                 painter = rememberAsyncImagePainter(
@@ -321,6 +286,26 @@ class DetailFragment : Fragment() {
             )
             startActivity(intent)
         }
+    }
+
+    @Composable
+    fun Description(discoverResults: DiscoverResults) {
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = "Description",
+            fontFamily = fontFamilyPR,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Bold,
+            color = colorWhite
+        )
+        Text(
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp),
+            text = discoverResults.overview,
+            fontFamily = fontFamilyPR,
+            fontSize = 10.sp,
+            color = colorOffWhite,
+            fontWeight = FontWeight.Bold
+        )
     }
 
     @Composable
@@ -368,8 +353,37 @@ class DetailFragment : Fragment() {
                     }
                 }
             })
+
     }
 
+    @Composable
+    fun ShowRecommendations() {
+        detailViewModel.getRecommendations(args.discoverResults.id.toString())
+        val recommendations = detailViewModel.listRecommendations.collectAsState().value
+        Column {
+            if (recommendations.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(10.dp),
+                    text = "Recommendations",
+                    fontFamily = fontFamilyPR,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colorWhite
+                )
+                LazyRow() {
+                    items(recommendations) { results ->
+                        AsyncImage(
+                            model = results.poster_path.srcImagePath,
+                            contentDescription = "Recommendations",
+                            modifier = Modifier
+                                .padding(start = 10.dp, end = 10.dp)
+                                .size(120.dp, 180.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 

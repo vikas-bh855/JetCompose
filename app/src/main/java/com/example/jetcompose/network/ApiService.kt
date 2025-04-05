@@ -45,4 +45,7 @@ interface ApiService {
 
     @POST("authentication/session/new")
     suspend fun createSession(@Body jsonObject: JsonObject): Response<Login>
+
+    @GET("movie/{movie_id}/recommendations")
+    suspend fun getRecommendations(@Path("movie_id") movieId: String): Response<Discover>
 }

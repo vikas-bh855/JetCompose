@@ -1,5 +1,6 @@
 package com.example.jetcompose.list
 
+import android.util.Log
 import com.example.jetcompose.network.ApiService
 import com.example.jetcompose.RemoteDataSource
 import kotlinx.coroutines.flow.flow
@@ -37,5 +38,11 @@ class ListRepository @Inject constructor(
 
     fun getVideoUrl(movieId: String) = flow {
         emit(dataSource.executeApi { apiService.getVideoUrl(movieId = movieId) })
+    }
+
+    fun getRecommendations(movieId: String) = flow {
+        emit(dataSource.executeApi {
+            Log.d("TAG", "getRecommendations: ")
+            apiService.getRecommendations(movieId) })
     }
 }

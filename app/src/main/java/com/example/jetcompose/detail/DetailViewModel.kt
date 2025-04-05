@@ -5,8 +5,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.jetcompose.list.ListRepository
 import com.example.jetcompose.Result
+import com.example.jetcompose.list.ListRepository
+import com.example.jetcompose.models.Discover
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.MovieCast
 import com.example.jetcompose.models.MovieCrew
@@ -23,6 +24,8 @@ class DetailViewModel @Inject constructor(private val repository: ListRepository
     val listMovieCrew: MutableStateFlow<List<MovieCrew>> = MutableStateFlow(emptyList())
     val videoUrl: MutableState<String> = mutableStateOf("")
 
+    val listRecommendations: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
+
     private val error: MutableStateFlow<String> = MutableStateFlow("")
     fun getMovieDetails(movieId: String) {
         viewModelScope.launch {
@@ -31,6 +34,7 @@ class DetailViewModel @Inject constructor(private val repository: ListRepository
                     is Result.Success<*> -> {
                         movieDetails.value = it.data as DiscoverResults
                     }
+
                     else -> error.emit("")
                 }
             }
@@ -44,6 +48,7 @@ class DetailViewModel @Inject constructor(private val repository: ListRepository
                     is Result.Success<*> -> {
                         listMovieCrew.emit((it.data as MovieCast).cast.subList(0, 5))
                     }
+
                     else -> error.emit("")
                 }
             }
@@ -62,6 +67,21 @@ class DetailViewModel @Inject constructor(private val repository: ListRepository
                                 return@forEach
                             }
                         }
+                    }
+
+                    else -> error.emit("")
+                }
+            }
+        }
+    }
+
+    fun getRecommendations(movieId: String) {
+        viewModelScope.launch {
+            repository.getRecommendations(movieId).collect {
+                when (it) {
+                    is Result.Success<*> -> {
+                        val results= (it.data as Discover).results
+                        listRecommendations.emit((results))
                     }
                     else -> error.emit("")
                 }

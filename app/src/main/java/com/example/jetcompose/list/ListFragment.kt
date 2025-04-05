@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -117,13 +118,17 @@ class ListFragment : Fragment() {
         )
         Scaffold(
             floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    startActivity(Intent(requireContext(), ProfileActivity::class.java))
-                }, modifier = Modifier
-                    .size(50.dp)
-                    .graphicsLayer {
-                        translationY = -translationAnimation.times(1.2f)
-                    }) {
+                FloatingActionButton(
+                    shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
+                    onClick = {
+                        startActivity(Intent(requireContext(), ProfileActivity::class.java))
+                    },
+                    modifier = Modifier
+                        .size(50.dp)
+                        .graphicsLayer {
+                            translationY = -translationAnimation.times(1.2f)
+                        }) {
                     Image(
                         painter = painterResource(id = R.drawable.menu_profile),
                         contentDescription = "",
@@ -131,6 +136,7 @@ class ListFragment : Fragment() {
                 }
                 FloatingActionButton(
                     shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
                     onClick = {},
                     modifier = Modifier
                         .size(50.dp)
@@ -141,20 +147,25 @@ class ListFragment : Fragment() {
                         painter = painterResource(id = R.drawable.setting), contentDescription = ""
                     )
                 }
-                FloatingActionButton(shape = CircleShape, onClick = {
-                    findNavController().navigate(R.id.searchFragment)
-                }, modifier = Modifier
-                    .size(50.dp)
-                    .graphicsLayer {
-                        translationX = -translationAnimation
-                        translationY = -translationAnimation
-                    }) {
+                FloatingActionButton(
+                    shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
+                    onClick = {
+                        findNavController().navigate(R.id.searchFragment)
+                    },
+                    modifier = Modifier
+                        .size(50.dp)
+                        .graphicsLayer {
+                            translationX = -translationAnimation
+                            translationY = -translationAnimation
+                        }) {
                     Image(
                         painter = painterResource(id = R.drawable.search), contentDescription = ""
                     )
                 }
                 FloatingActionButton(
                     shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
                     onClick = { isClick = !isClick },
                     modifier = Modifier
                         .zIndex(10f)
@@ -207,21 +218,22 @@ class ListFragment : Fragment() {
             modifier = Modifier.padding(top = 30.dp, bottom = 10.dp)
         ) { page ->
             Box {
-                Card(modifier = Modifier
-                    .graphicsLayer {
-                        val pageOffset =
-                            ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
+                Card(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            val pageOffset =
+                                ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
 
-                        val dp = lerp(
-                            start = 2f.toDp(),
-                            stop = 2.6f.toDp(),
-                            fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        )
-                        scaleX = dp.value
-                        scaleY = dp.value
-                    }
-                    .fillMaxWidth()
-                    .aspectRatio(16 / 9f), shape = RoundedCornerShape(10.dp)) {
+                            val dp = lerp(
+                                start = 2f.toDp(),
+                                stop = 2.6f.toDp(),
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
+                            scaleX = dp.value
+                            scaleY = dp.value
+                        }
+                        .fillMaxWidth()
+                        .aspectRatio(16 / 9f), shape = RoundedCornerShape(10.dp)) {
                     Box(Modifier.fillMaxSize()) {
                         Image(
                             painter = rememberAsyncImagePainter(model = listBanner[page].backdrop_path.srcImagePath),
