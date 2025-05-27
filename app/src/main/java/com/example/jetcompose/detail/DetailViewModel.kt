@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jetcompose.Result
-import com.example.jetcompose.list.ListRepository
+import com.example.jetcompose.home.HomeRepository
 import com.example.jetcompose.models.Discover
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.MovieCast
@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(private val repository: ListRepository) : ViewModel() {
+class DetailViewModel @Inject constructor(private val repository: HomeRepository) : ViewModel() {
 
     val movieDetails = mutableStateOf<DiscoverResults?>(null)
     val listMovieCrew: MutableStateFlow<List<MovieCrew>> = MutableStateFlow(emptyList())

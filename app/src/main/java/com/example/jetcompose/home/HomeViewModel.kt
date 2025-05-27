@@ -1,4 +1,4 @@
-package com.example.jetcompose.list;
+package com.example.jetcompose.home
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class ListViewModel @Inject constructor(private val repository: ListRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(private val repository: HomeRepository) : ViewModel() {
 
     val listDiscover = mutableStateOf(mutableMapOf<String, List<DiscoverResults>>())
     val listNowPlaying = mutableStateOf(listOf<DiscoverResults>())
@@ -24,6 +24,14 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
 
     init {
         viewModelScope.launch {
+            repository.getTrending().collect {
+                when (it) {
+                    is Result.Success<*> -> listTrending.emit((it.data as Discover).results)
+                    else -> error.emit("")
+                }
+            }
+        }
+        viewModelScope.launch {
             repository.getGenres().collect {
                 when (it) {
                     is Result.Success<*> -> {
@@ -32,12 +40,6 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
                             getDiscoverGenres(genre.id, genre.name, genres.size)
                         }
                     }
-                    else -> error.emit("")
-                }
-            }
-            repository.getTrending().collect {
-                when (it) {
-                    is Result.Success<*> -> listTrending.emit((it.data as Discover).results)
                     else -> error.emit("")
                 }
             }
@@ -57,8 +59,7 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
         }
     }
 
-    private fun getDiscoverGenres(genreId: String, genreName: String, size: Int) {
-        viewModelScope.launch {
+    private suspend fun getDiscoverGenres(genreId: String, genreName: String, size: Int) {
             repository.getDiscoverGenre(genreId = genreId).collect {
                 when (it) {
                     is Result.Success<*> -> {
@@ -70,5 +71,4 @@ class ListViewModel @Inject constructor(private val repository: ListRepository) 
                 }
             }
         }
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.jetcompose.list
+package com.example.jetcompose.home
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +10,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,13 +29,10 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,8 +54,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import androidx.compose.ui.zIndex
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -69,42 +64,33 @@ import coil3.compose.rememberAsyncImagePainter
 import com.example.jetcompose.R
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.DiscoverResultsParameterProvider
+import com.example.jetcompose.models.discoverList
 import com.example.jetcompose.profile.ProfileActivity
-import com.example.jetcompose.theme.colorDarkGreyTransparent
+import com.example.jetcompose.theme.colorAppBackground
 import com.example.jetcompose.theme.colorOffWhite
 import com.example.jetcompose.theme.colorWhite
 import com.example.jetcompose.utils.ItemImage
 import com.example.jetcompose.utils.Loader
 import com.example.jetcompose.utils.fontFamilyPR
 import com.example.jetcompose.utils.srcImagePath
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
-class ListFragment : Fragment() {
+class HomeFragment : Fragment() {
 
-    private val listViewModel by viewModels<ListViewModel>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true).apply {
-            duration = 200
-        }
-    }
+    private val homeViewModel by viewModels<HomeViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                isTransitionGroup = true
                 Home()
             }
         }
     }
 
-    @Preview(showBackground = true)
     @Composable
     fun Home() {
         var isClick by remember { mutableStateOf(false) }
@@ -117,8 +103,10 @@ class ListFragment : Fragment() {
             targetValue = if (isClick) -45f else 0f, animationSpec = tween(300)
         )
         Scaffold(
+            containerColor = colorAppBackground,
             floatingActionButton = {
                 FloatingActionButton(
+                    containerColor = Color(0xFF1d1e33),
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
                     onClick = {
@@ -135,6 +123,7 @@ class ListFragment : Fragment() {
                     )
                 }
                 FloatingActionButton(
+                    containerColor = Color(0xFF1d1e33),
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
                     onClick = {},
@@ -148,6 +137,7 @@ class ListFragment : Fragment() {
                     )
                 }
                 FloatingActionButton(
+                    containerColor = Color(0xFF1d1e33),
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
                     onClick = {
@@ -164,6 +154,7 @@ class ListFragment : Fragment() {
                     )
                 }
                 FloatingActionButton(
+                    containerColor = Color(0xFF1d1e33),
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 0.dp),
                     onClick = { isClick = !isClick },
@@ -173,11 +164,8 @@ class ListFragment : Fragment() {
                         .graphicsLayer {
                             rotationZ = rotateZ
                         }) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "",
-                        tint = Color(0xFFFDF8F2),
-                        modifier = Modifier.size(35.dp)
+                    Image(
+                        painter = painterResource(id = R.drawable.add), contentDescription = ""
                     )
                 }
             }, floatingActionButtonPosition = FabPosition.End
@@ -186,9 +174,9 @@ class ListFragment : Fragment() {
                 modifier = Modifier.padding(innerPadding),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                val mapDiscover = listViewModel.listDiscover.value
-                val listBanner = listViewModel.listTrending.collectAsState()
-                val listNowPlaying = listViewModel.listNowPlaying.value
+                val mapDiscover = homeViewModel.listDiscover.value
+                val listBanner = homeViewModel.listTrending.collectAsState()
+                val listNowPlaying = homeViewModel.listNowPlaying.value
                 val listSorted = mapDiscover.keys.sorted().toMutableList()
                 listSorted.add(0, "Banner")
                 listSorted.add(1, "Now Playing")
@@ -198,7 +186,7 @@ class ListFragment : Fragment() {
                         when (genreName) {
                             "Banner" -> Banner(listBanner.value)
                             "Now Playing" -> NowPlaying(genreName, listNowPlaying)
-                            else -> Discover(genreName, mapDiscover[genreName]!!)
+                            else -> Discover(mapDiscover[genreName]!!, genreName)
                         }
                     }
                 }
@@ -208,14 +196,15 @@ class ListFragment : Fragment() {
 
     @Preview
     @Composable
-    fun Banner(@PreviewParameter(DiscoverResultsParameterProvider::class) listBanner: List<DiscoverResults>) {
+    fun Banner(listBanner: List<DiscoverResults> = discoverList) {
         val pagerState = rememberPagerState(pageCount = {
             listBanner.size
         })
+        val itemSpacing = 10.dp
         HorizontalPager(
             state = pagerState,
-            contentPadding = PaddingValues(horizontal = 30.dp),
-            modifier = Modifier.padding(top = 30.dp, bottom = 10.dp)
+            contentPadding = PaddingValues(horizontal = 40.dp, vertical = 7.dp),
+            pageSpacing = itemSpacing
         ) { page ->
             Box {
                 Card(
@@ -223,17 +212,18 @@ class ListFragment : Fragment() {
                         .graphicsLayer {
                             val pageOffset =
                                 ((pagerState.currentPage - page) + pagerState.currentPageOffsetFraction).absoluteValue
-
-                            val dp = lerp(
-                                start = 2f.toDp(),
-                                stop = 2.6f.toDp(),
+                            alpha = lerp(
+                                start = 0.5f,
+                                stop = 1f,
                                 fraction = 1f - pageOffset.coerceIn(0f, 1f)
                             )
-                            scaleX = dp.value
-                            scaleY = dp.value
+                            scaleY = lerp(
+                                start = 0.75f,
+                                stop = 1f,
+                                fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                            )
                         }
-                        .fillMaxWidth()
-                        .aspectRatio(16 / 9f), shape = RoundedCornerShape(10.dp)) {
+                        .aspectRatio(16 / 9f), shape = RoundedCornerShape(12.dp)) {
                     Box(Modifier.fillMaxSize()) {
                         Image(
                             painter = rememberAsyncImagePainter(model = listBanner[page].backdrop_path.srcImagePath),
@@ -241,20 +231,7 @@ class ListFragment : Fragment() {
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
                         )
-                        Text(
-                            text = listBanner[page].title ?: "",
-                            fontFamily = fontFamilyPR,
-                            color = Color.White,
-                            modifier = Modifier
-                                .padding(5.dp)
-                                .align(Alignment.BottomCenter)
-                                .background(
-                                    color = colorDarkGreyTransparent,
-                                    shape = RoundedCornerShape(10.dp),
-                                )
-                                .padding(5.dp),
-                            fontWeight = FontWeight.Bold,
-                        )
+
                     }
                 }
             }
@@ -269,17 +246,16 @@ class ListFragment : Fragment() {
             Title(title = title, 15)
             LazyRow(Modifier.padding(vertical = 7.dp)) {
                 items(listDiscover) { discoverResults ->
-                    ItemImage(discoverResults, 150, 230, 12, this@ListFragment)
+                    ItemImage(discoverResults, 150, 230, 12, this@HomeFragment)
                 }
             }
         }
     }
 
-    @Preview
     @Composable
     fun Discover(
+        listDiscover: List<DiscoverResults>,
         title: String = "title",
-        listDiscover: List<DiscoverResults> = emptyList(),
         width: Int = 120,
         height: Int = 180
     ) {
@@ -298,7 +274,6 @@ class ListFragment : Fragment() {
         }
     }
 
-    @Preview
     @Composable
     fun ShowImage(
         @PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults,
@@ -311,7 +286,7 @@ class ListFragment : Fragment() {
                 .height(height.dp.plus(30.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ItemImage(discoverResults, fragment = this@ListFragment)
+            ItemImage(discoverResults, cornerSize = 12, fragment = this@HomeFragment)
             Text(
                 text = discoverResults.title,
                 fontFamily = fontFamilyPR,
