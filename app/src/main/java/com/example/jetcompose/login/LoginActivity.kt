@@ -62,7 +62,10 @@ class LoginActivity : ComponentActivity() {
                 dataStore.data.collect {
                     val sessionId = it[preferenceSession]
                     if (sessionId.isNullOrBlank()) isLoggedIn.value = true
-                    else startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    else {
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
                 }
             }
             if (isLoggedIn.value) Login()

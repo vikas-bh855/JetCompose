@@ -16,8 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: HomeRepository) : ViewModel() {
 
-    val listDiscover = mutableStateOf(mutableMapOf<String, List<DiscoverResults>>())
-    val listNowPlaying = mutableStateOf(listOf<DiscoverResults>())
+    val listDiscover: MutableStateFlow<Map<String, List<DiscoverResults>>> = MutableStateFlow(mapOf())
+    val listNowPlaying:MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
     val listTrending: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
     private val error: MutableStateFlow<String> = MutableStateFlow("")
     private val map = linkedMapOf<String, List<DiscoverResults>>()

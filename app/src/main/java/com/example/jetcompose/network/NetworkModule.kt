@@ -21,7 +21,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun getApiService(okHttpClient: OkHttpClient) =
+    fun getApiService(okHttpClient: OkHttpClient): ApiService =
         Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create())).build()
             .create(ApiService::class.java)

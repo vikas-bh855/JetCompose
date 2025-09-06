@@ -30,7 +30,7 @@ fun ItemImage(
     cornerSize: Int = 0,
     fragment: Fragment? = null
 ) {
-    //To debug image loading use - LocalContext.current.imageLoader.newBuilder().logger(DebugLogger()
+    //To debug image loading use - LocalContext.current.imageLoader.newBuilder().logger(DebugLogger())
     AsyncImage(
         placeholder = painterResource(R.drawable.placeholder),
         model = ImageRequest.Builder(LocalContext.current)

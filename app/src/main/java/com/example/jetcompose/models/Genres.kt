@@ -40,7 +40,8 @@ object DiscoverParameterProvider : PreviewParameterProvider<Discover> {
                     release_date = "2021-12-15",
                     adult = false,
                     original_language = "en",
-                    genres = listOf(Genres("12", "Action"), Genres("12", "Adventure"))
+                    genres = listOf(Genres("12", "Action"), Genres("12", "Adventure")),
+                    genre_ids = listOf(28)
                 )
             ),
             page = 1
