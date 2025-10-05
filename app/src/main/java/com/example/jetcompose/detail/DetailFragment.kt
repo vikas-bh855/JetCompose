@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -54,6 +55,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -67,9 +69,14 @@ import coil3.request.crossfade
 import com.example.jetcompose.R
 import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.DiscoverResultsParameterProvider
+import com.example.jetcompose.models.MovieCrew
+import com.example.jetcompose.models.discoverList
+import com.example.jetcompose.models.movieCrew
+import com.example.jetcompose.theme.colorBlue
 import com.example.jetcompose.theme.colorOffWhite
 import com.example.jetcompose.theme.colorWhite
 import com.example.jetcompose.theme.genreColor4
+import com.example.jetcompose.utils.DetailTitleText
 import com.example.jetcompose.utils.ItemCrew
 import com.example.jetcompose.utils.ItemImage
 import com.example.jetcompose.utils.Loader
@@ -93,34 +100,43 @@ class DetailFragment : Fragment() {
         detailViewModel.getMovieCredits(args.discoverResults.id.toString())
         detailViewModel.getMovieDetails(args.discoverResults.id.toString())
         detailViewModel.getRecommendations(args.discoverResults.id.toString())
-
         return ComposeView(requireContext()).apply {
             setContent {
                 Box {
-                    Loader(detailViewModel.movieDetails.value == null)
-                    detailViewModel.movieDetails.value?.let {
-                        DetailPage(it)
-                        PlayVideo()
+                    val movieDetails = detailViewModel.movieDetails.collectAsState().value
+                    Loader(movieDetails == null)
+                    movieDetails?.let {
+                        val listCrew = detailViewModel.listMovieCrew.collectAsState().value
+                        val recommendations =
+                            detailViewModel.listRecommendations.collectAsState().value
+                        DetailPage(it, listCrew, recommendations)
+                        PlayVideo(detailViewModel.videoUrl.value)
                     }
                 }
             }
         }
     }
 
+    @Preview
     @Composable
-    fun DetailPage(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
+    fun DetailPage(
+        @PreviewParameter(
+            DiscoverResultsParameterProvider::class
+        ) discoverResults: DiscoverResults,
+        listCrew: List<MovieCrew> = movieCrew,
+        movieRecommendation: List<DiscoverResults> = discoverList
+    ) {
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(enabled = true, state = ScrollState(0))
         ) {
             TopLayout(discoverResults)
-            BottomLayout(discoverResults)
+            BottomLayout(discoverResults, listCrew, movieRecommendation)
         }
     }
 
 
-    @Preview
     @OptIn(ExperimentalAnimationGraphicsApi::class, ExperimentalMaterial3Api::class)
     @Composable
     fun TopLayout(
@@ -161,11 +177,11 @@ class DetailFragment : Fragment() {
                 ) {
                     Canvas(modifier = Modifier.size(40.dp, 40.dp), onDraw = {
                         drawArc(
-                            color = genreColor4,
+                            color = colorBlue,
                             startAngle = -90f,
                             sweepAngle = lengthAnimatable.value,
                             useCenter = false,
-                            style = Stroke(width = 8f),
+                            style = Stroke(width = 8f, cap = StrokeCap.Round),
                         )
                     })
                     Text(
@@ -182,10 +198,10 @@ class DetailFragment : Fragment() {
                         Modifier.align(Alignment.CenterVertically)
                     )
                     Text(
-                        modifier = Modifier.padding(start = 10.dp),
+                        modifier = Modifier.padding(start = 5.dp),
                         text = discoverResults.release_date.formattedDate,
                         color = colorOffWhite,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         fontFamily = fontFamilyPR,
                     )
                 }
@@ -196,10 +212,25 @@ class DetailFragment : Fragment() {
                         Modifier.align(Alignment.CenterVertically)
                     )
                     Text(
-                        modifier = Modifier.padding(start = 10.dp),
+                        modifier = Modifier.padding(start = 5.dp),
                         text = Locale(discoverResults.original_language).displayLanguage,
                         color = colorOffWhite,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = fontFamilyPR,
+                    )
+                }
+
+                Row(Modifier.padding(top = 20.dp)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.watch_time),
+                        contentDescription = "",
+                        Modifier.align(Alignment.CenterVertically)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 5.dp),
+                        text = "${discoverResults.runtime / 60} h ${discoverResults.runtime % 60} m",
+                        color = colorOffWhite,
+                        fontWeight = FontWeight.SemiBold,
                         fontFamily = fontFamilyPR,
                     )
                 }
@@ -209,8 +240,9 @@ class DetailFragment : Fragment() {
                         .clip(RoundedCornerShape(10.dp))
                         .padding(5.dp),
                     text = discoverResults.genres[1].name,
-                    color = colorWhite,
+                    color = colorOffWhite,
                     fontFamily = fontFamilyPR,
+                    fontWeight = FontWeight.SemiBold,
                 )
                 val image = AnimatedImageVector.animatedVectorResource(R.drawable.avd_anim)
                 var atEnd by remember { mutableStateOf(false) }
@@ -218,14 +250,14 @@ class DetailFragment : Fragment() {
                     modifier = Modifier
                         .clickable {
                             atEnd = !atEnd
+                            detailViewModel.addToWatchlist(discoverResults.id.toString())
                         }
                         .padding(top = 20.dp),
                     painter = rememberAnimatedVectorPainter(image, atEnd),
                     contentDescription = "Add", // decorative element,
                     tint = {
-                        Color(0xFF758486)
-                    }
-                )
+                        colorBlue
+                    })
                 Image(
                     modifier = Modifier
                         .padding(top = 20.dp)
@@ -265,20 +297,23 @@ class DetailFragment : Fragment() {
     }
 
     @Composable
-    fun BottomLayout(@PreviewParameter(DiscoverResultsParameterProvider::class) discoverResults: DiscoverResults) {
+    fun BottomLayout(
+        discoverResults: DiscoverResults,
+        listCrew: List<MovieCrew>,
+        recommendations: List<DiscoverResults>
+    ) {
         Column(modifier = Modifier.padding(start = 10.dp)) {
             Spacer(modifier = Modifier.padding(top = 15.dp))
             Description(discoverResults)
             Spacer(modifier = Modifier.padding(top = 15.dp))
-            ShowCredits()
+            ShowCredits(listCrew)
             Spacer(modifier = Modifier.padding(top = 15.dp))
-            ShowRecommendations()
+            ShowRecommendations(recommendations)
         }
     }
 
     @Composable
-    fun PlayVideo() {
-        val videoUrl = detailViewModel.videoUrl.value
+    fun PlayVideo(videoUrl: String) {
         if (videoUrl.isNotBlank()) {
             val intent = YouTubeStandalonePlayer.createVideoIntent(
                 requireActivity(), "1234567890", videoUrl, 0, true, false
@@ -289,49 +324,34 @@ class DetailFragment : Fragment() {
 
     @Composable
     fun Description(discoverResults: DiscoverResults) {
-        Text(
-            text = "Description",
-            fontFamily = fontFamilyPR,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorWhite
-        )
+        DetailTitleText(text = "Description")
         Text(
             modifier = Modifier.padding(top = 5.dp),
-            text = discoverResults.overview, fontFamily = fontFamilyPR, fontSize = 11.sp,
+            text = discoverResults.overview,
+            fontFamily = fontFamilyPR,
+            fontSize = 11.sp,
             color = colorOffWhite,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Normal
         )
     }
 
     @Composable
-    fun ShowCredits() {
-        val alphaAnimation = remember { Animatable(0f) }
-        LaunchedEffect(alphaAnimation) {
-            alphaAnimation.animateTo(1f, tween(durationMillis = 1000))
-        }
-        Text(
-            text = "Credits",
-            fontFamily = fontFamilyPR,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold,
-            color = colorWhite
-        )
-        val listCrew = detailViewModel.listMovieCrew.collectAsState()
+    fun ShowCredits(listCrew: List<MovieCrew>) {
+        DetailTitleText(text = "Credits")
         LazyRow(
-            modifier = Modifier.padding(top = 5.dp),
-            content = {
-                itemsIndexed(listCrew.value) { _, item ->
-                    Column {
+            modifier = Modifier.padding(top = 5.dp), content = {
+                itemsIndexed(listCrew) { _, item ->
+                    Column(
+                        Modifier.padding(5.dp), horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         ItemCrew(item)
                         Text(
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .align(Alignment.CenterHorizontally),
                             text = item.name,
                             color = colorOffWhite,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 10.sp
+                            textAlign = TextAlign.Center,
+                            fontFamily = fontFamilyPR,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 10.sp,
                         )
                     }
                 }
@@ -339,22 +359,13 @@ class DetailFragment : Fragment() {
     }
 
     @Composable
-    fun ShowRecommendations() {
-        val recommendations = detailViewModel.listRecommendations.collectAsState().value
-        if (recommendations.isNotEmpty()) {
-                Text(
-                    text = "Recommendations",
-                    fontFamily = fontFamilyPR,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorWhite
-                )
-                LazyRow(modifier = Modifier.padding(top = 5.dp)) {
-                    items(recommendations) { results ->
-                        ItemImage(results, cornerSize = 12, fragment = this@DetailFragment)
-                    }
-                }
+    fun ShowRecommendations(recommendations: List<DiscoverResults>) {
+        DetailTitleText("Recommendations")
+        LazyRow(modifier = Modifier.padding(top = 5.dp)) {
+            items(recommendations) { results ->
+                ItemImage(results, cornerSize = 12, fragment = this@DetailFragment)
             }
+        }
     }
 }
 

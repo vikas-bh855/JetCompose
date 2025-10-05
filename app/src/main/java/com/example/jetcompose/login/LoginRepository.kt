@@ -25,4 +25,8 @@ class LoginRepository @Inject constructor(
     fun createSession(jsonObject: JsonObject) = flow {
         emit(dataSource.executeApi { apiService.createSession(jsonObject) })
     }
+
+    fun getAccountDetails(jsonObject: JsonObject) = flow {
+        emit(dataSource.executeApi { apiService.createSession(jsonObject) })
+    }
 }

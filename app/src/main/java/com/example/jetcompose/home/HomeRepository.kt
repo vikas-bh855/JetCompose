@@ -3,6 +3,7 @@ package com.example.jetcompose.home
 import android.util.Log
 import com.example.jetcompose.network.ApiService
 import com.example.jetcompose.RemoteDataSource
+import com.google.gson.JsonObject
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -49,10 +50,22 @@ class HomeRepository @Inject constructor(
     fun getRecommendations(movieId: String) = flow {
         emit(dataSource.executeApi {
             Log.d(TAG, "getRecommendations: $movieId")
-            apiService.getRecommendations(movieId) })
+            apiService.getRecommendations(movieId)
+        })
     }
 
-    companion object{
+    fun addToWatchlist(movieId: String) = flow {
+        emit(dataSource.executeApi {
+            val jsonObject = JsonObject()
+            jsonObject.addProperty("media_id", movieId)
+            jsonObject.addProperty("watchlist", true)
+            jsonObject.addProperty("media_type", "movie")
+            Log.d(TAG, "addToWatchlist: $jsonObject")
+            apiService.addToWatchlist("17855369", jsonObject)
+        })
+    }
+
+    companion object {
         private const val TAG = "HomeRepository"
     }
 }

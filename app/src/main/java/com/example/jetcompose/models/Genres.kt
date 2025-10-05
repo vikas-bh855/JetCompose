@@ -41,6 +41,7 @@ object DiscoverParameterProvider : PreviewParameterProvider<Discover> {
                     adult = false,
                     original_language = "en",
                     genres = listOf(Genres("12", "Action"), Genres("12", "Adventure")),
+                    runtime = 139,
                     genre_ids = listOf(28)
                 )
             ),

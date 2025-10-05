@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.jetcompose.theme.colorButtonBlue
 import com.example.jetcompose.theme.colorButtonGreen
-import dagger.hilt.android.AndroidEntryPoint
 
 class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {

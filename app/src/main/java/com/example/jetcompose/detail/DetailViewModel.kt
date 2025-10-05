@@ -12,6 +12,7 @@ import com.example.jetcompose.models.DiscoverResults
 import com.example.jetcompose.models.MovieCast
 import com.example.jetcompose.models.MovieCrew
 import com.example.jetcompose.models.Video
+import com.example.jetcompose.models.Watchlist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -20,11 +21,13 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailViewModel @Inject constructor(private val repository: HomeRepository) : ViewModel() {
 
-    val movieDetails = mutableStateOf<DiscoverResults?>(null)
+    val movieDetails = MutableStateFlow<DiscoverResults?>(null)
     val listMovieCrew: MutableStateFlow<List<MovieCrew>> = MutableStateFlow(emptyList())
     val videoUrl: MutableState<String> = mutableStateOf("")
 
     val listRecommendations: MutableStateFlow<List<DiscoverResults>> = MutableStateFlow(emptyList())
+
+    val addToWatchlist: MutableStateFlow<Watchlist?> = MutableStateFlow(null)
 
     private val error: MutableStateFlow<String> = MutableStateFlow("")
     fun getMovieDetails(movieId: String) {
@@ -32,7 +35,7 @@ class DetailViewModel @Inject constructor(private val repository: HomeRepository
             repository.getDetails(movieId).collect {
                 when (it) {
                     is Result.Success<*> -> {
-                        movieDetails.value = it.data as DiscoverResults
+                        movieDetails.emit(it.data as DiscoverResults)
                     }
 
                     else -> error.emit("")
@@ -80,13 +83,27 @@ class DetailViewModel @Inject constructor(private val repository: HomeRepository
             repository.getRecommendations(movieId).collect {
                 when (it) {
                     is Result.Success<*> -> {
-                        val results= (it.data as Discover).results
+                        val results = (it.data as Discover).results
                         listRecommendations.emit((results))
                     }
+
                     else -> error.emit("")
                 }
             }
         }
     }
 
+    fun addToWatchlist(movieId: String) {
+        viewModelScope.launch {
+            repository.addToWatchlist(movieId).collect {
+                when (it) {
+                    is Result.Success<*> -> {
+                        val results = (it.data as Watchlist)
+                        addToWatchlist.emit((results))
+                    }
+                    else -> error.emit("")
+                }
+            }
+        }
+    }
 }

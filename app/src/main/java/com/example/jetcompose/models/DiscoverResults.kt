@@ -19,6 +19,7 @@ data class DiscoverResults(
     val adult: Boolean,
     val original_language: String,
     val genres: List<Genres>? = null,
+    val runtime: Int,
     val genre_ids: List<Int>
 ) : Serializable
 
@@ -37,6 +38,7 @@ class DiscoverResultsParameterProvider : PreviewParameterProvider<DiscoverResult
             adult = false,
             original_language = "en",
             genres = listOf(Genres("12", "Action"), Genres("12", "Adventure")),
+            runtime =  139,
             genre_ids = listOf(28, 35)
         )
     )
@@ -55,6 +57,7 @@ val discoverList = listOf(
         adult = false,
         original_language = "en",
         genres = listOf(Genres("12", "Action"), Genres("12", "Adventure")),
+        runtime =  139,
         genre_ids = listOf(28, 35)
     ),
     DiscoverResults(
@@ -69,9 +72,22 @@ val discoverList = listOf(
         adult = false,
         original_language = "en",
         genres = listOf(Genres("12", "Action"), Genres("12", "Adventure")),
+        runtime =  139,
         genre_ids = listOf(28, 35)
     )
+)
 
-
+val movieCrew = listOf(
+    MovieCrew(
+        adult = false,
+        gender = 2,
+        id = 65731,
+        known_for_department = "Acting",
+        name = "Sam Worthington",
+        original_name = "Sam Worthington",
+        character = "Jake Sully",
+        profile_path = "/mflBcox36s9ZPbsZPVOuhf6axaJ.jpg",
+        popularity = "2.2573"
+    )
 )
 

@@ -1,7 +1,9 @@
 package com.example.jetcompose.models
 
+import androidx.compose.runtime.Immutable
 import java.io.Serializable
 
+@Immutable
 data class VideoResults(
     val iso_639_1: String,
     val iso_3166_1: String,
