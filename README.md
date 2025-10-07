@@ -1,4 +1,4 @@
-# JetCompose
+# MovieRadar
 
 ## Jetpack Compose Carousel and Animation.
 
